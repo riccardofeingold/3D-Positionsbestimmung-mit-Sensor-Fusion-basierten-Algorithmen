@@ -1,6 +1,5 @@
 //LIBRARIES
 #include "HEIGHT_DATA.c"
-#include <SimpleKalmanFilter.h>
 #include <Adafruit_GPS.h>
 #include <SPI.h>
 #include <SD.h>
@@ -534,12 +533,14 @@ void RHEIGHT()//Search a reference height in the data file
       lcd.print(hoehe);
       
       float normPressure = bme.readPressureOnHeight(SEALEVELPRESSURE_HPA_RP, hoehe, gradient, T0+273.15);
+      Serial.println(normPressure);
       float delta_height = bme.readAltitude(normPressure,15,0.0065);
+      Serial.println(delta_height);
       
-      String dataString = "";
+      /*String dataString = "";
       dataString += String(delta_height);
       logFile.println(delta_height);
-      logFile.flush();
+      logFile.flush();*/
       
       lcd.setCursor(0,2);
       lcd.print("dh=");

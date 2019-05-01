@@ -6,11 +6,13 @@
 
 typedef struct Heights {
     uint16_t lon;
-    uint16_t lat;
-    uint16_t h;
+    int lat;
+    int h;
 };
 
 const uint16_t latitude[MAX2] = {924,922,920,918,916,915,913,911,910,908,906,904,902,800,899,897,895,894,892,890,888};
+
+//const uint16_t longitude[MAX3] = {34673,34936,35198,35461,35723,35986,36249,36511,36774,37036,37299,37561,37824,38087,38349,38612,38874,39137,39399,39662,39925,40187,40450,40712,40975,41238,41500,41763,42025,42288,42550,42813,43076,43338,43601,43863,44126,44389,44651,44914,45176};
 
 const PROGMEM struct Heights height[MAX] = {
     34673,924,662,
@@ -878,6 +880,6 @@ const PROGMEM struct Heights height[MAX] = {
 };
 
 uint16_t lonStore[MAX];
-uint16_t hStore[MAX];
-uint16_t search(uint16_t x, uint16_t y);
-uint16_t searchPrecise(float x, float y);
+int16_t hStore[MAX];
+int16_t search(uint16_t x, int16_t y);
+int16_t searchPrecise(float x, float y);
