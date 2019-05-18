@@ -1,5 +1,5 @@
 # Maturaarbeit
-Barometrischer Höhenmesser kombiniert mit Machine Learning
+Barometrischer Höhenmesser kombiniert mit Map-Matching und Kalman-Filter
 
 Wie baue ich einen Höhenmesser, der durch die Kombination aus GPS und Barometer präzisere Messungen in unterschiedlichen Situationen liefert, als der Barometer oder das GPS alleine?
 
