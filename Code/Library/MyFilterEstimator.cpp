@@ -1,5 +1,7 @@
+#include <stdio.h>
 #include "MyFilterEstimator.h"
 #define factor 111172.87
+#define max_distance 100
 
 void MyFilterEstimator::begin(float lon, float lat)
 {
