@@ -39,6 +39,7 @@
 #include <Filter.h> 
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
+#include <utility/imumaths.h>
 #include <EEPROM.h>
 
 /*Adafruit GPS*/
@@ -773,7 +774,7 @@ void DWD()
 /**************************************************************************/
 /*    GPS    */
 /**************************************************************************/
-bool change = false;
+
 void gps()
 {
   float current_time = millis();
@@ -795,14 +796,10 @@ void gps()
       lcd.print("GPS");
       lcd.setCursor(0,1);
       lcd.print("Lat:");
-      if (change) lcd.print(GPS.latitudeDegrees, 5); 
-      else lcd.print(GPS.latitude);
-      lcd.print(GPS.lat);
+      lcd.print(GPS.latitudeDegrees, 5); lcd.print(GPS.lat);
       lcd.setCursor(0,2);
       lcd.print("Lon:");
-      if (change) lcd.print(GPS.longitudeDegrees, 5); 
-      else lcd.print(GPS.longitude);
-      lcd.print(GPS.lon);
+      lcd.print(GPS.longitudeDegrees, 5); lcd.print(GPS.lon);
       lcd.setCursor(0,3);
       lcd.print("h="); lcd.println(GPS.altitude,1);
       lcd.print(" Sat.="); lcd.print((int)GPS.satellites);
@@ -823,20 +820,12 @@ void gps()
     curr_state = dwd;
     BUTTON_FLAG_PRESSED[1] = false;
   }
-
-  //change the Position output (degrees or degrees and minutes)
-  if (BUTTON_FLAG_PRESSED[2])
-  {
-    change = !change;
-    BUTTON_FLAG_PRESSED[2] = false;
-  }
 }
 
 /**************************************************************************/
 /*    Comparison of the different height estimation    */
 /**************************************************************************/
 bool measurement_control = false;
-bool long_measurement = false;
 void COMPARE()
 {
   float current_time = millis();
@@ -884,19 +873,6 @@ void COMPARE()
         logFile.println(",");
         logFile.flush();
         measurement_control = false;
-      }else if (long_measurement)
-      {
-        lcd.setCursor(11,0);
-        lcd.print("READ");
-        logFile.print(height_I);
-        logFile.print(",");
-        logFile.print(height_dwd);
-        logFile.print(",");
-        logFile.print(height_gps);
-        logFile.print(",");
-        logFile.print(altitude);
-        logFile.println(",");
-        logFile.flush();
       }
     }
   }
@@ -918,12 +894,6 @@ void COMPARE()
     measurement_control = true;
     BUTTON_FLAG_PRESSED[2] = false;
   }
-
-  if (BUTTON_FLAG_HOLD[0])
-  {
-    long_measurement = !long_measurement;
-    BUTTON_FLAG_HOLD[0] = false;
-  }
 }
 
 
@@ -940,7 +910,7 @@ void MAP_MATCHING()
   double last_x_coordinate, last_y_coordinate;//last "good" coordinate from gps befor FIX==0 is reached.
   int fixquality; //Determines how good the connection is of the gps reciever and the satelites: e.g. in a tunnel = low fixquality, on a landscape = high fixquality
   float headingVel_gps;//Heading velocity
-  float gps_height, model_height;
+  //bool START = false;
 
   //Used sensor for estimating the position and orientation  
   unsigned long tStart = millis();  
@@ -976,12 +946,6 @@ void MAP_MATCHING()
     //If we have a GPS Fix we read the speed in knots, convert it to m/s and Filter the random process noise of it with a so called recursive filter
     if (GPS.fix) 
     {
-      //GPS height 
-      gps_height = GPS.altitude;
-
-      //model height
-      model_height = model.search(GPS.longitudeDegrees,GPS.latitudeDegrees);
-      
       //position processed by the Map-MAtching algorthm and by Kalman Filter (if KFswitcher = true)
       mm1.begin(longitude, latitude);
       mm1.begin(longitude, latitude);
@@ -1073,7 +1037,7 @@ void MAP_MATCHING()
     float ave = (bme.readAltitude(SEALEVELPRESSURE_HPA, T0, gradient) + bme.readAltitude_DWD(SEALEVELPRESSURE_HPA_DWD*100, gradient))/2;
     float ave1 = (bme.readAltitude(sealevel, T0, gradient) + bme.readAltitude_DWD(sealevelDWD*100, gradient))/2;
 
-    //Logging data latitude, longitude and height
+    //Logging data latitude, longitude and est_error
     logFile.print(latitude,6);
     logFile.print(",");
     logFile.print(longitude,6);
@@ -1087,10 +1051,6 @@ void MAP_MATCHING()
     logFile.print(bme.readAltitude(SEALEVELPRESSURE_HPA, T0, gradient));
     logFile.print(",");
     logFile.print(bme.readAltitude_DWD(SEALEVELPRESSURE_HPA_DWD*100, gradient));
-    logFile.print(",");
-    logFile.print(gps_height);
-    logFile.print(",");
-    logFile.print(model_height);
     logFile.println(",");
     logFile.flush();
   }
@@ -1106,7 +1066,7 @@ void MAP_MATCHING()
   //Exit Map-Matching mode
   if (BUTTON_FLAG_PRESSED[4])
   {
-    curr_state = prev_state;//Button F
+    curr_state = international;//Button F
     BUTTON_FLAG_PRESSED[4] = false;
   }
 }
