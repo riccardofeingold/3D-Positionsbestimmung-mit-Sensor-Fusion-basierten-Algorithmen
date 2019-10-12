@@ -14,10 +14,11 @@
  * 
  * The main goal was to implement an Map-Matching algorithm for the arduino hardware. The Kalman Filter which is also included
  * in the code was simply a try, but since the Kalman Filter usually calculates the estimates with big matrices, the author decided therefore to simply implement
- * a 1D Kalman Filter. By the way this program uses this Kalman Filter Library the only thing which has to be done is estimating the process error and the measurement error.
+ * a 1D Kalman Filter. Besides this filter the author made also an alternative, which is called MyFilterEstimator.
  * 
- * The IMU is used to calculate the position by using the orientation and the acceleration. Combined with the GPS
- * it will be then processed by the Kalman-Filter in order to get a better estimate. 
+ * The IMU is used to calculate the position by using the magnetometer for the orientation and the accelerometer for the acceleration. Combined with the GPS
+ * it will be then processed by the Kalman-Filter in order to get a better estimate, which can be turned off. The MyFilterEstimator works in both cases: when the Kalman-Filter is on and also when it is off.
+ * 
  * These sensors use I2C or SPI to communicate, 2 or 4 pins are required
  * to interface.
  *
@@ -39,7 +40,6 @@
 #include <Filter.h> 
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
-#include <utility/imumaths.h>
 #include <EEPROM.h>
 
 /*Adafruit GPS*/
@@ -83,8 +83,8 @@ bool KFSwitcher = false;
 MyFilterEstimator filter;
 
 //Map-Matching
-MapMatching mm; 
-MapMatching mm1;
+MapMatching mm;//to improve GPS and DGPS
+MapMatching mm_one;//for baro calibration
 #define Pi 3.1415926
 
 //Kalman Filter
@@ -107,11 +107,13 @@ float SEALEVELPRESSURE_HPA_DWD = 1013.25;
 float SEALEVELPRESSURE_HPA_RP = 1013.25;//For the reference-point-calculation
 float T0 = 15;//Temperature at sea level
 float sealevel = 1013.25, sealevelDWD = 1013.25;
-uint32_t MesurementPreviousMillis = 0; //Stores the last time when BME280 measured somthing
 float gradient = 0.0065;//Temperaturgradient T(auf Meereshöhe) = t(gemessen) + gradient*Höhe
 Adafruit_BME280 bme;//I2C
 
 uint16_t measurement_interval = 1000; //This is how fast the measured values are updated
+uint16_t gps_interval = 100;
+uint32_t MesurementPreviousMillis = 0; //Stores the last time when BME280 measured somthing
+uint32_t GPSmeaPrev = 0;
 
 //LCD
 LiquidCrystal_I2C lcd(0x27,20,4);
@@ -178,12 +180,10 @@ void displayCalStatus(void)
 /**************************************************************************/
     //X-Position Estimator
 /**************************************************************************/
-double xPosition(double ay, double headingVel_gps, double headingVel_imu, double lon, double heading, int fixquality)
+double xPosition(double ay, double headingVel_gps, double headingVel_imu, double heading, int fixquality)
 {
   float estimation;
-
-  //Complementary Filter for velocity
-  float velocity = (0.95*headingVel_imu + 0.05*headingVel_gps)*cos(heading*Pi/180);
+  double lon;
   
   //Zeroing the velocity if no movement is present, because the gps sends always some small velocity values although nothing is moving (random process)
   if (fixquality==0)
@@ -206,16 +206,21 @@ double xPosition(double ay, double headingVel_gps, double headingVel_imu, double
     }
   }
   
-  //calulating the longitudenal acceleration
+  //calulating the longitudenal acceleration and velocity
   float accel_x = ay*cos(heading*Pi/180);
-
+  float velocity = headingVel_gps*cos(heading*Pi/180);
+  
   //calculating the longitude velocity
   xVel = xVel + accel_x*ACCEL_VEL_TRANSITION;
+  
+  //Increase the tolerated deviation for the Filter
+  if (headingVel_gps*headingVel_gps > 2500) filter.max_distance = headingVel_gps*headingVel_gps;
+  else filter.max_distance = 2500;//the distances are squared so that the board has to calculate less; here we have a max. distance of 50m
   
   //calculate the position in degrees (Our model for the Kalman Filter)
   float xPos1 = xPos + velocity*ACCEL_VEL_TRANSITION*METER_2_DEG;//calculating the position with the measure velocity
   xPos = xPos + xVel*ACCEL_VEL_TRANSITION*METER_2_DEG;//calculating the position with the calculated velocity
-  xPos = (xPos+xPos1)/2;//take the average of both calculations 
+  xPos = 0.9*xPos+0.1*xPos1;//take the average of both calculations, where the data of the imu sensor is more weighted
   
   //Model Input for the MyFilterEstimator
   filter.modelInputLon(xPos);
@@ -250,19 +255,17 @@ double xPosition(double ay, double headingVel_gps, double headingVel_imu, double
       estimation = xPos;
     }
   }
-    return estimation;
+  return estimation;
 }
 
 /**************************************************************************/
     //Y-Position Estimator
 /**************************************************************************/
 
-double yPosition(double ay, double headingVel_gps, double headingVel_imu, double lat, double heading, int fixquality)
+double yPosition(double ay, double headingVel_gps, double headingVel_imu, double heading, int fixquality)
 {
   float estimation;
-
-  //Complementary Filter for velocity
-  float velocity = (0.95*headingVel_imu + 0.05*headingVel_gps)*sin(heading*Pi/180);
+  double lat;
   
   //Zeroing the velocity if no movement is present, because the gps sends always some small velocity values although nothing is moving (random process)  
   if (fixquality==0)
@@ -285,16 +288,21 @@ double yPosition(double ay, double headingVel_gps, double headingVel_imu, double
     }
   }
   
-  //calulating the latitudenal acceleration
+  //calulating the latitudenal acceleration and velocity
   float accel_y = ay*sin(heading*Pi/180);
-
+  float velocity = headingVel_gps*sin(heading*Pi/180);
+  
   //calculating the latitude velocity
   yVel = yVel + accel_y*ACCEL_VEL_TRANSITION;
+  
+  //Increase the tolerated deviation for the Filter
+  if (headingVel_gps*headingVel_gps > 10000) filter.max_distance = headingVel_gps*headingVel_gps;
+  else filter.max_distance = 10000;//the distances are squared so that the board has to calculate less; here we have a max. distance of 50m
   
   //calculating the latitude in degrees (our model for the Kalman Filter)
   float yPos1 = yPos + velocity*ACCEL_VEL_TRANSITION*METER_2_DEG;//calculating the position with the measure velocity 
   yPos = yPos + yVel*ACCEL_VEL_TRANSITION*METER_2_DEG;//calculating the position with the calculated velocity
-  yPos = (yPos+yPos1)/2;//take the average of both calculations 
+  yPos = 0.9*yPos+0.1*yPos1;//take the average of both calculations 
   
   //Model Input for the MyFilterEstimator
   filter.modelInputLat(yPos);
@@ -357,6 +365,7 @@ void InitializeSM()
   /********************/
   pinMode(10,OUTPUT);
 
+  //Here we're creating a new logging file to store our data
   if (!SD.begin(10,11,12,13)) Serial.println("Card init. failed");
   char filename[15];
   strcpy(filename, "DELTAH00.TXT");
@@ -386,10 +395,20 @@ void InitializeSM()
   GPS.begin(9600);
   GPS.sendCommand(PMTK_ENABLE_SBAS);//Enable search for SBAS satellite (works only with 1Hz output rate)
   GPS.sendCommand(PMTK_ENABLE_WAAS);//Enable DGPS to correct the postion data
+  //GPS.sendCommand(PMTK_DISABLE_SBAS);
+  //GPS.sendCommand(PMTK_DISABLE_WAAS);
+  //GPS.sendCommand(PMTK_SET_BAUD_57600);
+  
+  //mySerial.end();
+  //GPS.begin(57600);//new baudrate, so that we can use an update rat of 10 Hz
+  
   GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);//Means nothing else than: print only RMC (lon,lat) and GGA (height over sealevel) data => both have the necessary data
   GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);//Updating frequence 
-  GPS.sendCommand(PGCMD_ANTENNA);//I assume this says the GPS-shield that an antenna is attached 
+  
+  //GPS.sendCommand(PGCMD_ANTENNA);// Request updates on antenna status, comment out to keep quiet 
+  
   delay(1000);
+  //Ask for firmware version
   mySerial.println(PMTK_Q_RELEASE);
   
 //STATE_MACHINE
@@ -588,6 +607,7 @@ void keypadEvent(KeypadEvent key)
       if (key=='C') BUTTON_FLAG_PRESSED[2] = true;//Decrease
       if (key=='D') BUTTON_FLAG_PRESSED[3] = true;//Increase
       if (key=='F') BUTTON_FLAG_PRESSED[4] = true;//Start Map-Matching state
+      if (key=='0') BUTTON_FLAG_PRESSED[5] = true;//Reset the compensation values, which are calculated in the MapMatching library
       if (key=='E') 
       { 
         abgleich = !abgleich;
@@ -774,7 +794,7 @@ void DWD()
 /**************************************************************************/
 /*    GPS    */
 /**************************************************************************/
-
+bool change = false;
 void gps()
 {
   float current_time = millis();
@@ -788,7 +808,7 @@ void gps()
     if (stopwatch >= 10) Backlight = false;
     
     lcd.clear();
-    lcd.print("Fix: "); lcd.print((int)GPS.fix);
+    lcd.print("Fix: "); lcd.print((int)GPS.fixquality);
     
     if (GPS.fix) 
     {
@@ -796,10 +816,14 @@ void gps()
       lcd.print("GPS");
       lcd.setCursor(0,1);
       lcd.print("Lat:");
-      lcd.print(GPS.latitudeDegrees, 5); lcd.print(GPS.lat);
+      if (change) lcd.print(GPS.latitudeDegrees, 5); 
+      else lcd.print(GPS.latitude);
+      lcd.print(GPS.lat);
       lcd.setCursor(0,2);
       lcd.print("Lon:");
-      lcd.print(GPS.longitudeDegrees, 5); lcd.print(GPS.lon);
+      if (change) lcd.print(GPS.longitudeDegrees, 5); 
+      else lcd.print(GPS.longitude);
+      lcd.print(GPS.lon);
       lcd.setCursor(0,3);
       lcd.print("h="); lcd.println(GPS.altitude,1);
       lcd.print(" Sat.="); lcd.print((int)GPS.satellites);
@@ -812,6 +836,7 @@ void gps()
     curr_state = comparing;
     stopwatch = 0;
     BUTTON_FLAG_PRESSED[0] = false;
+    BUTTON_FLAG_PRESSED[2] = false;
   }
 
   //Change the state
@@ -819,6 +844,14 @@ void gps()
   {
     curr_state = dwd;
     BUTTON_FLAG_PRESSED[1] = false;
+    BUTTON_FLAG_PRESSED[2] = false;
+  }
+
+  //change the Position output (degrees or degrees and minutes)
+  if (BUTTON_FLAG_PRESSED[2])
+  {
+    change = !change;
+    BUTTON_FLAG_PRESSED[2] = false;
   }
 }
 
@@ -826,9 +859,32 @@ void gps()
 /*    Comparison of the different height estimation    */
 /**************************************************************************/
 bool measurement_control = false;
+bool long_measurement = false;
 void COMPARE()
 {
   float current_time = millis();
+  float height_I;
+  float height_dwd;
+  float height_gps;
+  float height_model;
+  
+  //For the measurement the update rate is now 10 Hz
+  if (current_time - GPSmeaPrev >= gps_interval)
+  {
+    GPSmeaPrev = current_time;
+    
+    //International Height
+    height_I = bme.readAltitude(SEALEVELPRESSURE_HPA, T0, gradient);
+
+    //DWD Height
+    height_dwd = bme.readAltitude_DWD(SEALEVELPRESSURE_HPA_DWD*100, gradient);//My own defined function in the Adafruit BME280 Library
+
+    //GPS Height
+    height_gps = GPS.altitude;
+
+    //Height Model Test 
+    height_model = model.search(GPS.longitudeDegrees,GPS.latitudeDegrees);
+  }
   
   if (current_time - MesurementPreviousMillis >= measurement_interval)
   {
@@ -837,27 +893,23 @@ void COMPARE()
     if (GPS.fix)
     { 
       //International Height
-      float height_I = bme.readAltitude(SEALEVELPRESSURE_HPA, T0, gradient);
       lcd.setCursor(0,1);
       lcd.print("hI=");
       lcd.print(height_I);
       
       //DWD Height
-      float height_dwd = bme.readAltitude_DWD(SEALEVELPRESSURE_HPA_DWD*100, gradient);//My own defined function in the Adafruit BME280 Library
       lcd.setCursor(0,2);
       lcd.print("hD=");
       lcd.print(height_dwd);
       
       //GPS Height 
       lcd.setCursor(0,3);
-      float height_gps = GPS.altitude;
       lcd.print("hG="); lcd.print(height_gps);
       
       //Height Model Test 
-      float altitude = model.search(GPS.longitudeDegrees,GPS.latitudeDegrees);
       lcd.setCursor(0,0);
       lcd.print("hM=");
-      lcd.print(altitude);
+      lcd.print(height_model);
 
       if (measurement_control)
       {
@@ -869,30 +921,57 @@ void COMPARE()
         logFile.print(",");
         logFile.print(height_gps);
         logFile.print(",");
-        logFile.print(altitude);
+        logFile.print(height_model);
         logFile.println(",");
         logFile.flush();
         measurement_control = false;
+      }else if (long_measurement)
+      {
+        lcd.setCursor(11,0);
+        lcd.print("READING");
+        logFile.print(height_I);
+        logFile.print(",");
+        logFile.print(height_dwd);
+        logFile.print(",");
+        logFile.print(height_gps);
+        logFile.print(",");
+        logFile.print(height_model);
+        logFile.println(",");
+        logFile.flush();
       }
     }
   }
 
+  //Button b
   if (BUTTON_FLAG_PRESSED[0])
   {
     curr_state = international;
     BUTTON_FLAG_PRESSED[0] = false;
+    BUTTON_FLAG_HOLD[0] = false;
+    BUTTON_FLAG_PRESSED[2] = false;
   }
-
+ 
+  //Button A
   if (BUTTON_FLAG_PRESSED[1])
   {
     curr_state = gnss;
+    BUTTON_FLAG_HOLD[0] = false;
     BUTTON_FLAG_PRESSED[1] = false;
+    BUTTON_FLAG_PRESSED[2] = false;
   }
 
+  //Button C
   if (BUTTON_FLAG_PRESSED[2])
   {
     measurement_control = true;
     BUTTON_FLAG_PRESSED[2] = false;
+  }
+
+  //Button C
+  if (BUTTON_FLAG_HOLD[0])
+  {
+    long_measurement = !long_measurement;
+    BUTTON_FLAG_HOLD[0] = false;
   }
 }
 
@@ -901,16 +980,19 @@ void COMPARE()
 /*    Map-Matching-State    */
 /**************************************************************************/
 
-long counter = 0;
+bool measurement_control_mm = false;
+bool long_measurement_mm = false;
 void MAP_MATCHING()
 {
   float current_time = millis();
   double checker = 0; //if it's is 1 that means we reached a fixpoint otherwise it prints 0
-  double x_coordinate,y_coordinate;//Longitude und Latitude in degrees
-  double last_x_coordinate, last_y_coordinate;//last "good" coordinate from gps befor FIX==0 is reached.
+  double mm_dist, mm_one_dist;
+  double raw_lon, raw_lat;//So that we can reset our mapmatching alogrithm in case of not-satisfing measurement results
   int fixquality; //Determines how good the connection is of the gps reciever and the satelites: e.g. in a tunnel = low fixquality, on a landscape = high fixquality
-  float headingVel_gps;//Heading velocity
-  //bool START = false;
+  float headingVel_gps;//Heading velocity calculated by gps
+  float headingVel_imu;//heading velocity calculated by imu
+  float gps_height, model_height;
+  
 
   //Used sensor for estimating the position and orientation  
   unsigned long tStart = millis();  
@@ -927,62 +1009,30 @@ void MAP_MATCHING()
   if (int(mag.x()) == 0 && int(mag.y()) < 0) heading_direction = 0;
   if (int(mag.y()) < 0 && int(mag.x()) > 0) heading_direction = atan2(-mag.x(), -mag.y())*180/Pi;
   if (int(mag.y()) < 0 && int(mag.x()) < 0) heading_direction = atan2(-mag.x(), -mag.y())*180/Pi;
-  
-  //Read velocity from imu  
-  float headingVel_imu = ACCEL_VEL_TRANSITION*accel.y()/cos(DEG_2_RAD*heading_direction)-corrHeadingVel_imu;//Calculating the heading velocity based on measurements of the imu sensor
-  
-  //bias of the headingVel_imu
-  if ((int)headingVel_imu*10==0) corrHeadingVel_imu = headingVel_imu;
-  
+
+  //Updates every seconds the display and stores data on the SD card
   if (current_time - MesurementPreviousMillis >= measurement_interval)
   {
-    lcd.clear();
     MesurementPreviousMillis = current_time;
-    
+    lcd.clear();
     //ON/OFF OF THE BACKLIGHT
     stopwatch += 1;
     if (stopwatch >= 10) Backlight = false;
 
-    //If we have a GPS Fix we read the speed in knots, convert it to m/s and Filter the random process noise of it with a so called recursive filter
+    //Read velocity from imu 
+    headingVel_imu = ACCEL_VEL_TRANSITION*accel.y()-corrHeadingVel_imu;//Calculating the heading velocity based on measurements of the imu sensor
+    
+    //bias of the headingVel_imu
+    if ((int)headingVel_imu*10==0) corrHeadingVel_imu = headingVel_imu;
+    
+    //If we have a GPS Fix we read the speed in knots, convert it to m/s; MapMatching occurs in this if-statement
     if (GPS.fix) 
     {
-      //position processed by the Map-MAtching algorthm and by Kalman Filter (if KFswitcher = true)
-      mm1.begin(longitude, latitude);
-      mm1.begin(longitude, latitude);
-      latitude = mm1.yPos;
-      longitude = mm1.xPos;
+      //GPS height, raw lon and lat 
+      gps_height = GPS.altitude;
+      raw_lon = GPS.longitudeDegrees;
+      raw_lat = GPS.latitudeDegrees;
 
-      //Print the estimated Position
-      lcd.setCursor(0,1);
-      lcd.print("M:");
-      lcd.print(latitude, 5); lcd.print(GPS.lat);
-      lcd.print(",");
-      lcd.print(longitude, 5); lcd.print(GPS.lon);
-      
-      if (fixquality==1)
-      {
-        //postion from the GPS
-        mm.begin(GPS.longitudeDegrees,GPS.latitudeDegrees);
-        mm.begin(GPS.longitudeDegrees,GPS.latitudeDegrees);
-        x_coordinate = mm.xPos;
-        y_coordinate = mm.yPos;
-      }else
-      {
-        x_coordinate = GPS.longitudeDegrees;
-        y_coordinate = GPS.latitudeDegrees;
-      }
-
-      //Measurement input for the MyFilterEstimator
-      filter.compare(x_coordinate,y_coordinate);
-      
-      lcd.setCursor(0,0);
-      lcd.print("GPS");
-      lcd.setCursor(4,0);
-      lcd.print(GPS.fixquality);
-      lcd.setCursor(0,2);
-      lcd.print("P:"); lcd.print(y_coordinate,5); lcd.print(GPS.lat);
-      lcd.print(","); lcd.print(x_coordinate,5); lcd.print(GPS.lon);
-      
       //GPS velocity and fixquality
       headingVel_gps = (GPS.speed-corrHeadingVel_gps)*1.852/3.6; //Estimation of velocity; vel_knots*1.852/3.6=velocity in m/s
       if ((int)headingVel_gps*10==0) corrHeadingVel_gps = GPS.speed;//If no movement is done store the bias 
@@ -991,82 +1041,207 @@ void MAP_MATCHING()
     {
       fixquality = 0;//So that it is really giving 0, because without this it could be also the case that an other number gets printed.
     }
-    
-    //Storing the last valid gps coordinates
-    last_x_coordinate = x_coordinate;
-    last_y_coordinate = y_coordinate;
-    
-    //Get calibration status
-    if (mm1.distance() <= mm1.cali_dist)
-    {
-      //Calibrate barometer if a fix point is reached
-      sealevel = bme.seaLevelForAltitude(mm1.calibrate_BARO(), bme.readPressure()/100);
-      sealevelDWD = bme.seaLevelForAltitudeDWD(mm1.calibrate_BARO(), bme.readPressure())/100;
-      xPos = last_x_coordinate;
-      yPos = last_y_coordinate;
-      checker = 1;
-    }
+
+    //model height
+    model_height = model.search(raw_lon,raw_lat);
+
+    //Measurement input for the MyFilterEstimator
+    filter.compare(raw_lon,raw_lat);
     
     //If this is false the Map-Matching System will start.
-    if (mm1.RESET && mm.RESET)
-    {
-      lcd.setCursor(4,0);
-      lcd.print("START");
-    }else
+    if (mm_one.RESET && mm.RESET)
     {
       lcd.setCursor(6,0);
-      lcd.print("Checker: ");
-      lcd.print(checker);
+      lcd.print("START");
+
+      //MapMatching
+      mm_one.begin(raw_lon, raw_lat, true);
+      latitude = mm_one.yPos;
+      longitude = mm_one.xPos;
       
+      mm.begin(raw_lon,raw_lat,true);
+      raw_lon = mm.xPos;
+      raw_lat = mm.yPos;
+   
+      //Calibrate barometer if a fix point is reached
+      sealevel = bme.seaLevelForAltitude(mm_one.calibrate_BARO(), bme.readPressure()/100);
+      sealevelDWD = bme.seaLevelForAltitudeDWD(mm_one.calibrate_BARO(), bme.readPressure())/100;
+      xPos = raw_lon;
+      yPos = raw_lat;
+    }else
+    {
       //Calculating the xPos and yPos in degrees
       //angle_gps and angle_gyro are used in a complementary filter to estimate heading direction
       //xPos, yPos, xVel and yVel are global variables
-      longitude = xPosition(accel.y(), headingVel_gps, headingVel_imu, last_x_coordinate, heading_direction, fixquality);//We use here the y acceleration, because it is the axis which is always pointing into the direction of movement
-      latitude = yPosition(accel.y(), headingVel_gps, headingVel_imu, last_y_coordinate, heading_direction, fixquality);
-      Serial.print("xPos");
-      Serial.println(xPos);
-      Serial.print("yPos");
-      Serial.println(yPos);
+      longitude = xPosition(accel.y(), headingVel_gps, headingVel_imu, heading_direction, fixquality);//We use here the y acceleration, because it is the axis which is always pointing into the direction of movement
+      latitude = yPosition(accel.y(), headingVel_gps, headingVel_imu, heading_direction, fixquality);
+
+      //MapMatching
+      if (fixquality==1)
+      {
+        mm.calibrate_GPS(raw_lon,raw_lat,true);//if false no compensation values if true compensation values are calculated
+        mm_dist = mm.distance();
+        raw_lon = mm.xPos;
+        raw_lat = mm.yPos;
+      }else
+      {
+        mm.calibrate_GPS(raw_lon,raw_lat,false);
+        mm_dist = mm.distance();
+      }
+      
+      mm_one.calibrate_GPS(longitude, latitude, true);
+      mm_one_dist = mm_one.distance();
+      latitude = mm_one.yPos;
+      longitude = mm_one.xPos;
+      
+      //Get calibration status
+      if (mm_one_dist <= mm_one.cali_dist || mm_dist <= mm.cali_dist)
+      {
+        //Calibrate barometer if a fix point is reached
+        sealevel = bme.seaLevelForAltitude(mm_one.calibrate_BARO(), bme.readPressure()/100);
+        sealevelDWD = bme.seaLevelForAltitudeDWD(mm_one.calibrate_BARO(), bme.readPressure())/100;
+        xPos = raw_lon;
+        yPos = raw_lat;
+        checker = 1;
+      }
+      
+      lcd.setCursor(6,0);
+      lcd.print("Checker: ");
+      lcd.print(checker,0);
     }
-   
+    
+    //Print the estimated Position
+    lcd.setCursor(0,1);
+    lcd.print("M:");
+    lcd.print(latitude, 5); lcd.print(GPS.lat);
+    lcd.print(",");
+    lcd.print(longitude, 5); lcd.print(GPS.lon);
+
+    lcd.setCursor(0,0);
+    lcd.print("GPS");
+    lcd.setCursor(4,0);
+    lcd.print(GPS.fixquality);
+    lcd.setCursor(0,2);
+    lcd.print("P:"); lcd.print(raw_lat,5); lcd.print(GPS.lat);
+    lcd.print(","); lcd.print(raw_lon,5); lcd.print(GPS.lon);
+    
     lcd.setCursor(0,3);
     lcd.print("HI=");
     lcd.print(bme.readAltitude(sealevel, T0, gradient));
     lcd.print(" DWD=");
     lcd.print(bme.readAltitude_DWD(sealevelDWD*100, gradient)); 
-    float ave = (bme.readAltitude(SEALEVELPRESSURE_HPA, T0, gradient) + bme.readAltitude_DWD(SEALEVELPRESSURE_HPA_DWD*100, gradient))/2;
-    float ave1 = (bme.readAltitude(sealevel, T0, gradient) + bme.readAltitude_DWD(sealevelDWD*100, gradient))/2;
 
-    //Logging data latitude, longitude and est_error
-    logFile.print(latitude,6);
-    logFile.print(",");
-    logFile.print(longitude,6);
-    logFile.print(",");
-    logFile.print(checker);
-    logFile.print(",");
-    logFile.print(bme.readAltitude(sealevel, T0, gradient));
-    logFile.print(",");
-    logFile.print(bme.readAltitude_DWD(sealevelDWD*100, gradient));
-    logFile.print(",");
-    logFile.print(bme.readAltitude(SEALEVELPRESSURE_HPA, T0, gradient));
-    logFile.print(",");
-    logFile.print(bme.readAltitude_DWD(SEALEVELPRESSURE_HPA_DWD*100, gradient));
-    logFile.println(",");
-    logFile.flush();
+    //Logging data latitude, longitude and height
+    if (measurement_control_mm)
+    {
+      measurement_control_mm = false;
+      lcd.setCursor(17,0);
+      lcd.print("R");//short reding
+      logFile.print(latitude,6);
+      logFile.print(",");
+      logFile.print(longitude,6);
+      logFile.print(",");
+      logFile.print(raw_lon,6);
+      logFile.print(",");
+      logFile.print(raw_lat,6);
+      logFile.print(",");
+      logFile.print(xPos,6);
+      logFile.print(",");
+      logFile.print(yPos,6);
+      logFile.print(",");
+      logFile.print(filter.distance);
+      logFile.print(",");
+      logFile.print(checker);
+      logFile.print(",");
+      logFile.print(bme.readAltitude(sealevel, T0, gradient));
+      logFile.print(",");
+      logFile.print(bme.readAltitude_DWD(sealevelDWD*100, gradient));
+      logFile.print(",");
+      logFile.print(bme.readAltitude(SEALEVELPRESSURE_HPA, T0, gradient));
+      logFile.print(",");
+      logFile.print(bme.readAltitude_DWD(SEALEVELPRESSURE_HPA_DWD*100, gradient));
+      logFile.print(",");
+      logFile.print(gps_height);
+      logFile.print(",");
+      logFile.print(model_height);
+      logFile.println(",");
+      logFile.flush();
+    }else if (long_measurement_mm)
+    {
+      lcd.setCursor(17,0);
+      lcd.print("LR");//long reading
+      logFile.print(latitude,6);
+      logFile.print(",");
+      logFile.print(longitude,6);
+      logFile.print(",");
+      logFile.print(raw_lon,6);
+      logFile.print(",");
+      logFile.print(raw_lat,6);
+      logFile.print(",");
+      logFile.print(xPos,6);
+      logFile.print(",");
+      logFile.print(yPos,6);
+      logFile.print(",");
+      logFile.print(filter.distance);
+      logFile.print(",");
+      logFile.print(checker);
+      logFile.print(",");
+      logFile.print(bme.readAltitude(sealevel, T0, gradient));
+      logFile.print(",");
+      logFile.print(bme.readAltitude_DWD(sealevelDWD*100, gradient));
+      logFile.print(",");
+      logFile.print(bme.readAltitude(SEALEVELPRESSURE_HPA, T0, gradient));
+      logFile.print(",");
+      logFile.print(bme.readAltitude_DWD(SEALEVELPRESSURE_HPA_DWD*100, gradient));
+      logFile.print(",");
+      logFile.print(gps_height);
+      logFile.print(",");
+      logFile.print(model_height);
+      logFile.println(",");
+      logFile.flush();
+    }
   }
-
   //automatic Map_Matching: The reference points are selceted by the program; Button C
   if (BUTTON_FLAG_PRESSED[2])
   {
     mm.RESET = !mm.RESET;
-    mm1.RESET = !mm1.RESET;
+    mm_one.RESET = !mm_one.RESET;
     BUTTON_FLAG_PRESSED[2] = false;
   }
 
   //Exit Map-Matching mode
   if (BUTTON_FLAG_PRESSED[4])
   {
-    curr_state = international;//Button F
+    curr_state = prev_state;//Button F
+    BUTTON_FLAG_HOLD[0] = false;
+    BUTTON_FLAG_PRESSED[2] = false;
+    BUTTON_FLAG_PRESSED[3] = false;
     BUTTON_FLAG_PRESSED[4] = false;
+  }
+
+  //Button D
+  if (BUTTON_FLAG_PRESSED[3])
+  {
+    measurement_control_mm = true;
+    BUTTON_FLAG_PRESSED[3] = false;
+  }
+
+  //Button D
+  if (BUTTON_FLAG_HOLD[1])
+  {
+    long_measurement_mm = !long_measurement_mm;
+    BUTTON_FLAG_HOLD[1] = false;
+  }
+
+  //Button 0 in case of something goes wrong there is the possibility to reset everything
+  if (BUTTON_FLAG_PRESSED[5])
+  {
+    filter.prev_lon = raw_lon;
+    filter.prev_lat = raw_lat;
+    mm.compensation_lon = 0;
+    mm.compensation_lat = 0;
+    mm_one.compensation_lon = 0;
+    mm_one.compensation_lat = 0;
+    BUTTON_FLAG_PRESSED[5] = false;
   }
 }

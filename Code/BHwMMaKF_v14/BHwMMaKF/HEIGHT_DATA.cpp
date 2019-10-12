@@ -146,12 +146,6 @@ int HeightModel::height(float x, float y)
   n[2] = r1[0]*r2[1] - r2[0]*r1[1];
 
   //Calculate the height
-  if (n[2]==0)
-  {
-    return ortsvektor[2];
-  }else
-  {
-    h = -((n[0]*(x-ortsvektor[0])+n[1]*(y-ortsvektor[1])-n[2]*ortsvektor[2])/n[2]);
-    return h;
-  }
+  h = -((n[0]*(x-ortsvektor[0])+n[1]*(y-ortsvektor[1])-n[2]*ortsvektor[2])/n[2]);
+  return h;
 }

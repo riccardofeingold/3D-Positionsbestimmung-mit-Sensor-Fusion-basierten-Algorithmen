@@ -67,27 +67,21 @@ void MapMatching::calibrate_GPS(double x, double y, bool calibrate)
   //calculating the exact distance between the nearest point and user's position
   dist = sqrt((latitude-(y+compensation_lat))*DEG_2_METER*(latitude-(y+compensation_lat))*DEG_2_METER+(longitude-(x+compensation_lon))*DEG_2_METER*(longitude-(x+compensation_lon))*DEG_2_METER);
   
-  if (dist <= cali_dist) 
+  if (dist <= cali_dist && calibrate) 
   {
     if (!inside_cal_area)
     {
-      if (calibrate)
-      { 
-        compensation_lat = latitude-y;
-        compensation_lon = longitude-x;
-        xPos = x+compensation_lon;
-        yPos = y+compensation_lat;
-        inside_cal_area = true;
-      }
-    }else 
-    {
+      compensation_lat = latitude-y;
+      compensation_lon = longitude-x;
       xPos = x+compensation_lon;
       yPos = y+compensation_lat;
+      inside_cal_area = true;
     }
-  }
-  else if (dist >= cali_dist) 
+  }else if (dist >= cali_dist && calibrate) inside_cal_area = false;
+  else 
   {
-    if (calibrate) inside_cal_area = false;
+    xPos = x+compensation_lon;
+    yPos = y+compensation_lat;
   }
 }
 

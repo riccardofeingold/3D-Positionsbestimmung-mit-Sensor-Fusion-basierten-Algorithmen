@@ -56,7 +56,7 @@ class MapMatching
         float calibrate_BARO();
         void calibrate_GPS(double x, double y, bool calibrate);
         bool RESET = true;
-        double cali_dist = 20;
+        double cali_dist = 35;
         float xPos, yPos;
         float compensation_lat=0, compensation_lon=0;
     private:
