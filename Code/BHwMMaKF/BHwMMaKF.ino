@@ -454,7 +454,7 @@ void loop()
     // a tricky thing here is if we print the NMEA sentence, or data
     // we end up not listening and catching other sentences!
     // so be very wary if using OUTPUT_ALLDATA and trytng to print out data
-    Serial.println(GPS.lastNMEA());   // this also sets the newNMEAreceived() flag to false
+    //Serial.println(GPS.lastNMEA());   // this also sets the newNMEAreceived() flag to false
 
     if (!GPS.parse(GPS.lastNMEA()))   // this also sets the newNMEAreceived() flag to false
       return;  // we can fail to parse a sentence in which case we should just wait for another
@@ -689,6 +689,8 @@ void gps()
     stopwatch = 0;
     BUTTON_FLAG_PRESSED[0] = false;
     BUTTON_FLAG_PRESSED[2] = false;
+    BUTTON_FLAG_PRESSED[4] = false;
+    BUTTON_FLAG_HOLD[0] = false;
   }
 
   //Change the state
@@ -697,6 +699,8 @@ void gps()
     curr_state = dwd;
     BUTTON_FLAG_PRESSED[1] = false;
     BUTTON_FLAG_PRESSED[2] = false;
+    BUTTON_FLAG_PRESSED[4] = false;
+    BUTTON_FLAG_HOLD[0] = false;
   }
 
   //change the Position output (degrees or degrees and minutes)
@@ -794,6 +798,7 @@ void COMPARE()
     BUTTON_FLAG_PRESSED[0] = false;
     BUTTON_FLAG_HOLD[0] = false;
     BUTTON_FLAG_PRESSED[2] = false;
+    BUTTON_FLAG_PRESSED[4] = false;
   }
  
   //Button A
@@ -803,6 +808,7 @@ void COMPARE()
     BUTTON_FLAG_HOLD[0] = false;
     BUTTON_FLAG_PRESSED[1] = false;
     BUTTON_FLAG_PRESSED[2] = false;
+    BUTTON_FLAG_PRESSED[4] = false;
   }
 
   //Button C
@@ -830,7 +836,7 @@ bool long_measurement_mm = false;
 void MAP_MATCHING()
 {
   double checker = 0; //if it's is 1 that means we reached a fixpoint otherwise it prints 0
-  double mm_one_dist;
+  double mm_one_dist, mm_dist;
   double raw_lon, raw_lat;//So that we can reset our mapmatching alogrithm in case of not-satisfing measurement results
   int fixquality; //Determines how good the connection is of the gps reciever and the satelites: e.g. in a tunnel = low fixquality, on a landscape = high fixquality
   float headingVel_gps;//Heading velocity calculated by gps
@@ -918,9 +924,13 @@ void MAP_MATCHING()
       mm_one_dist = mm_one.distance();
       latitude = mm_one.yPos;
       longitude = mm_one.xPos;
+
+      //as a control, in the case if the calibrated GPS values are worse than the normal ones 
+      mm_one.calibrate_GPS(raw_lon,raw_lat,false);
+      mm_dist = mm_one.distance();
       
       //Get calibration status
-      if (mm_one_dist <= mm_one.cali_dist)
+      if (mm_one_dist <= mm_one.cali_dist || mm_dist <= mm_one.cali_dist)
       {
         //Calibrate barometer if a fix point is reached
         sealevel = bme.seaLevelForAltitude(mm_one.calibrate_BARO(), bme.readPressure()/100);
@@ -1038,6 +1048,8 @@ void MAP_MATCHING()
   {
     curr_state = prev_state;//Button F
     BUTTON_FLAG_HOLD[0] = false;
+    BUTTON_FLAG_PRESSED[0] = false;
+    BUTTON_FLAG_PRESSED[1] = false;
     BUTTON_FLAG_PRESSED[2] = false;
     BUTTON_FLAG_PRESSED[3] = false;
     BUTTON_FLAG_PRESSED[4] = false;

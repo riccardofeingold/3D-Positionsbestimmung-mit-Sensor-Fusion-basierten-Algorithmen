@@ -20,18 +20,23 @@ void MyFilterEstimator::compare(float lon, float lat)
   
   if (distance >= max_distance) correction = true;
   else 
-  {
-    est_lon = lon;
-    est_lat = lat;
-    
+  { 
     if (smallest_lon <= lon) 
     {
-      if (lon <= biggest_lon) prev_lon = lon;
+      if (lon <= biggest_lon) 
+      {
+        prev_lon = lon;
+        est_lon = lon;
+      }
     }
     
     if (smallest_lat <= lat)
     {
-      if (lat <= biggest_lat) prev_lat = lat;
+      if (lat <= biggest_lat) 
+      {
+        est_lat = lat;
+        prev_lat = lat;
+      }
     }
     correction = false;
   }
