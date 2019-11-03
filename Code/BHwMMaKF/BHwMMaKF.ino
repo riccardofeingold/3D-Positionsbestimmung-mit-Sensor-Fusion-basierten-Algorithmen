@@ -920,8 +920,8 @@ void MAP_MATCHING()
       filter.compare(raw_lon,raw_lat);
       
       //Getting heading velocity from MapMatching library
-      headingVel_gps = sqrt(mm_one_dist);
-      
+      headingVel_gps = sqrt(filter.distance);
+
       //Calculating the xPos and yPos in degrees
       //angle_gps and angle_gyro are used in a complementary filter to estimate heading direction
       //xPos, yPos, xVel and yVel are global variables
@@ -933,7 +933,7 @@ void MAP_MATCHING()
       mm_one_dist = mm_one.distance();
       latitude = mm_one.yPos;
       longitude = mm_one.xPos;
-
+      
       //as a control, in the case if the calibrated GPS values are worse than the normal ones 
       mm_one.calibrate_GPS(raw_lon,raw_lat,false);
       mm_dist = mm_one.distance();
@@ -974,7 +974,7 @@ void MAP_MATCHING()
         lcd.print("Vel:");
         lcd.print(headingVel_gps*3.6, 2); 
         lcd.print(",");
-        lcd.print(sqrt(xVel*xVel+yVel*yVel), 2);
+        lcd.print(sqrt(xVel*xVel+yVel*yVel)*3.6, 2);
       break;
     }
 
