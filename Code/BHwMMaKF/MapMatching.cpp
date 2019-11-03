@@ -85,10 +85,14 @@ void MapMatching::calibrate_GPS(double x, double y, bool calibrate)
       xPos = x+compensation_lon;
       yPos = y+compensation_lat;
     }
-  }
-  else if (dist >= cali_dist) 
+  }else
   {
-    inside_cal_area = false;
+    if (calibrate)
+    {
+      inside_cal_area = false;
+      xPos = x+compensation_lon;
+      yPos = y+compensation_lat;
+    }
   }
 }
 

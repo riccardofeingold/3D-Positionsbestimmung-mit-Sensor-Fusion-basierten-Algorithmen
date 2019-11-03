@@ -59,8 +59,8 @@ class MapMatching
         double cali_dist = 20;
         float xPos, yPos;
         float compensation_lat=0, compensation_lon=0;
+        bool inside_cal_area = false;//so that we only calibrate once for each fix point
     private:
         double dist;
-        double latitude, longitude, height;
-        bool inside_cal_area = false;//so that we only calibrate once for each fix point 
+        double latitude, longitude, height; 
 };

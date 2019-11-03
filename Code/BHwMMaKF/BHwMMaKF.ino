@@ -528,7 +528,7 @@ void internationaleFormel()
   //Höhenabgleich which is activated by the E button; After I pressed the E button, I can increase D and decrease C the height by changing either the sealevel Pressure or the Temperature at sealevel
   switch (abgleich)
   {
-    case false:
+    case true:
       if (BUTTON_FLAG_PRESSED[2]) 
       {
         SEALEVELPRESSURE_HPA -= 0.1;
@@ -544,7 +544,7 @@ void internationaleFormel()
       else if (BUTTON_FLAG_HOLD[1]) SEALEVELPRESSURE_HPA += 0.001;
       
     break;
-    case true:
+    case false:
       if (BUTTON_FLAG_PRESSED[2]) 
       {
         T0 -= 0.1;
@@ -833,6 +833,7 @@ void COMPARE()
 
 bool measurement_control_mm = false;
 bool long_measurement_mm = false;
+bool show_vel = false;
 void MAP_MATCHING()
 {
   double checker = 0; //if it's is 1 that means we reached a fixpoint otherwise it prints 0
@@ -885,13 +886,17 @@ void MAP_MATCHING()
       raw_lat = GPS.latitudeDegrees;
     
       //GPS velocity and fixquality
-      headingVel_gps = (GPS.speed-corrHeadingVel_gps)*1.852/3.6; //Estimation of velocity; vel_knots*1.852/3.6=velocity in m/s
-      if ((int)headingVel_gps*10==0) corrHeadingVel_gps = GPS.speed;//If no movement is done store the bias 
+      //headingVel_gps = (GPS.speed-corrHeadingVel_gps)*1.852/3.6; //Estimation of velocity; vel_knots*1.852/3.6=velocity in m/s 
+      //if ((int)headingVel_gps*10==0) corrHeadingVel_gps = GPS.speed;//If no movement is done store the bias 
       fixquality = GPS.fixquality;//0 = no fix, 1 = GPS and 2 = DGPS
     }
     
     //model height
     model_height = model.search(raw_lon,raw_lat);
+
+    //change the cali_dist to 15 if dgps is available
+    if (fixquality==2) mm_one.cali_dist = 15;
+    else mm_one.cali_dist = 20;
     
     //If this is false the Map-Matching System will start.
     if (mm_one.RESET)
@@ -914,12 +919,16 @@ void MAP_MATCHING()
       //Measurement input for the MyFilterEstimator
       filter.compare(raw_lon,raw_lat);
       
+      //Getting heading velocity from MapMatching library
+      headingVel_gps = sqrt(mm_one_dist);
+      
       //Calculating the xPos and yPos in degrees
       //angle_gps and angle_gyro are used in a complementary filter to estimate heading direction
       //xPos, yPos, xVel and yVel are global variables
       longitude = xPosition(accel.y(), headingVel_gps, headingVel_imu, heading_direction, fixquality);//We use here the y acceleration, because it is the axis which is always pointing into the direction of movement
       latitude = yPosition(accel.y(), headingVel_gps, headingVel_imu, heading_direction, fixquality);
-      
+
+      //calibrate GPS
       mm_one.calibrate_GPS(longitude, latitude, true);
       mm_one_dist = mm_one.distance();
       latitude = mm_one.yPos;
@@ -932,25 +941,42 @@ void MAP_MATCHING()
       //Get calibration status
       if (mm_one_dist <= mm_one.cali_dist || mm_dist <= mm_one.cali_dist)
       {
-        //Calibrate barometer if a fix point is reached
-        sealevel = bme.seaLevelForAltitude(mm_one.calibrate_BARO(), bme.readPressure()/100);
-        sealevelDWD = bme.seaLevelForAltitudeDWD(mm_one.calibrate_BARO(), bme.readPressure())/100;
+        if (!mm_one.inside_cal_area)
+        {
+          //Calibrate barometer if a fix point is reached
+          sealevel = bme.seaLevelForAltitude(mm_one.calibrate_BARO(), bme.readPressure()/100);
+          sealevelDWD = bme.seaLevelForAltitudeDWD(mm_one.calibrate_BARO(), bme.readPressure())/100;
+        }
         xPos = raw_lon;
         yPos = raw_lat;
         checker = 1;
       }
-      
+
       lcd.setCursor(6,0);
       lcd.print("Checker: ");
       lcd.print(checker,0);
     }
     
-    //Print the estimated Position
-    lcd.setCursor(0,1);
-    lcd.print("M:");
-    lcd.print(latitude, 5); lcd.print(GPS.lat);
-    lcd.print(",");
-    lcd.print(longitude, 5); lcd.print(GPS.lon);
+    switch (show_vel)
+    {
+      case false:
+        //Print the estimated Position
+        lcd.setCursor(0,1);
+        lcd.print("M:");
+        lcd.print(latitude, 5); lcd.print(GPS.lat);
+        lcd.print(",");
+        lcd.print(longitude, 5); lcd.print(GPS.lon);
+      break;
+      
+      case true:
+        //Print the estimated Position
+        lcd.setCursor(0,1);
+        lcd.print("Vel:");
+        lcd.print(headingVel_gps*3.6, 2); 
+        lcd.print(",");
+        lcd.print(sqrt(xVel*xVel+yVel*yVel), 2);
+      break;
+    }
 
     lcd.setCursor(0,0);
     lcd.print("GPS");
@@ -972,9 +998,9 @@ void MAP_MATCHING()
       measurement_control_mm = false;
       lcd.setCursor(17,0);
       lcd.print("R");//short reding
-      logFile.print(latitude,6);
-      logFile.print(",");
       logFile.print(longitude,6);
+      logFile.print(",");
+      logFile.print(latitude,6);
       logFile.print(",");
       logFile.print(raw_lon,6);
       logFile.print(",");
@@ -985,6 +1011,10 @@ void MAP_MATCHING()
       logFile.print(yPos,6);
       logFile.print(",");
       logFile.print(filter.distance);
+      logFile.print(",");
+      logFile.print(headingVel_gps);
+      logFile.print(",");
+      logFile.print(headingVel_imu);
       logFile.print(",");
       logFile.print(checker);
       logFile.print(",");
@@ -1018,6 +1048,10 @@ void MAP_MATCHING()
       logFile.print(yPos,6);
       logFile.print(",");
       logFile.print(filter.distance);
+      logFile.print(",");
+      logFile.print(headingVel_gps);
+      logFile.print(",");
+      logFile.print(headingVel_imu);
       logFile.print(",");
       logFile.print(checker);
       logFile.print(",");
@@ -1055,6 +1089,12 @@ void MAP_MATCHING()
     BUTTON_FLAG_PRESSED[4] = false;
   }
 
+  //Button 0
+  if (BUTTON_FLAG_PRESSED[5])
+  {
+    show_vel = !show_vel; //boolean: through this you can see the headingVel_gps and the velocity, which is fusion of the velocity of the imu and the gps
+    BUTTON_FLAG_PRESSED[5] = false;
+  }
   //Button D
   if (BUTTON_FLAG_PRESSED[3])
   {
@@ -1158,7 +1198,7 @@ double xPosition(double ay, double headingVel_gps, double headingVel_imu, double
   //calculate the position in degrees (Our model for the Kalman Filter)
   float xPos1 = xPos + velocity*ACCEL_VEL_TRANSITION*METER_2_DEG;//calculating the position with the measure velocity
   xPos = xPos + xVel*ACCEL_VEL_TRANSITION*METER_2_DEG;//calculating the position with the calculated velocity
-  xPos = 0.9*xPos+0.1*xPos1;//take the average of both calculations, where the data of the imu sensor is more weighted
+  xPos = 0.1*xPos+0.9*xPos1;//Measurements have shown that the velocity calculated from the previous and the current point is more precise than the velocity from the imu sensor
   
   //Model Input for the MyFilterEstimator
   filter.modelInputLon(xPos);
@@ -1238,9 +1278,9 @@ double yPosition(double ay, double headingVel_gps, double headingVel_imu, double
   else filter.max_distance = 10000;//the distances are squared so that the board has to calculate less; here we have a max. distance of 50m
   
   //calculating the latitude in degrees (our model for the Kalman Filter)
-  float yPos1 = yPos + velocity*ACCEL_VEL_TRANSITION*METER_2_DEG;//calculating the position with the measure velocity 
+  float yPos1 = yPos + velocity*ACCEL_VEL_TRANSITION*METER_2_DEG;//calculating the position with the measured velocity 
   yPos = yPos + yVel*ACCEL_VEL_TRANSITION*METER_2_DEG;//calculating the position with the calculated velocity
-  yPos = 0.9*yPos+0.1*yPos1;//take the average of both calculations 
+  yPos = 0.1*yPos+0.9*yPos1;//Measurements have shown that the velocity calculated from the previous and the current point is more precise than the velocity from the imu sensor 
   
   //Model Input for the MyFilterEstimator
   filter.modelInputLat(yPos);

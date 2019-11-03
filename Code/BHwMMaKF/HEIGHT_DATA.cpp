@@ -1,5 +1,6 @@
 #include "HEIGHT_DATA.h"
 #define DEG_2_METER 111139
+#define max_height 1000
 
 int HeightModel::search(float x, float y)
 {
@@ -152,6 +153,7 @@ int HeightModel::height(float x, float y)
   }else
   {
     h = -((n[0]*(x-ortsvektor[0])+n[1]*(y-ortsvektor[1])-n[2]*ortsvektor[2])/n[2]);
-    return h;
+    if (h<0 || h>max_height) return ortsvektor[2];
+    else return h;
   }
 }
