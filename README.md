@@ -2,6 +2,8 @@
 
 ## Entwicklung eines Arduino-basierten Embedded-System zur Höhenmessung
 
+![alt text](https://github.com/RF4587/Maturaarbeit/blob/master/Texte/Bilder/Titelbild.png)
+
 In dieser Arbeit wird die Entwicklung eines Arduino-basierten Höhenmeters unter der Verwendung von Sensor-Fusion-Prinzipien und -Methoden dokumentiert und kommentiert. Dieses Embedded-System besitzt einen Barometer, ein GPS-Modul (Global Positioning System) und einen IMU-Sensor (Inertial Measurement Unit). Hinzu kommen noch Elemente der Bedienoberfläche wie etwa ein LC-Display und eine Tastatur. 
 
 Das Ziel der Arbeit ist, ein Produkt vorzustellen, dass eine Höhengenauigkeit von ± 5 m erreicht. Dies wird mit Hilfe eines Map Matching-Algorithmus bewerkstelligt, der grundsätzlich dafür sorgt, dass fortlaufend eine Kalibrierung des Barometers als auch des GPS stattfindet (siehe Kapitel Map Matching).
