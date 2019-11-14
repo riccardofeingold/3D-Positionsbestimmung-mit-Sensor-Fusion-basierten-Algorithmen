@@ -5,14 +5,18 @@ float lat_max, lat_min, lon_max, lon_min;
 
 int main(void)
 {
-    FILE *f = fopen("DatasetOfCH.txt","r");
+    FILE *f = fopen("DatasetOfCH.csv","r");
     FILE *g = fopen("dataset.txt","w");
     
     //ask for users input data
-    printf("Geben Sie die Koordinate (lat/lon) der oberen linken Ecke von Ihrer ausgewählten Umgebung auf Swissmap (siehe Kap. 6.2.4): ");
-    scanf("%f, %f", &lat_max, &lon_min);
-    printf("Geben Sie die Koordinate (lat/lon) der unteren rechten Ecke von Ihrer ausgewählten Umgebung auf Swissmap: ");
-    scanf("%f, %f", &lat_min, &lon_max);
+    //Geben Sie die Koordinate (lat/lon) der oberen linken Ecke und von Ihrer ausgewählten Umgebung auf Swissmap (siehe Kap. 6.2.4):
+    lat_max = 46.90606;
+    lon_min = 7.38621;
+    
+    //Geben Sie die Koordinate (lat/lon) der unteren rechten Ecke von Ihrer ausgewählten Umgebung auf Swissmap:
+    lat_min = 46.89707;
+    lon_max = 7.39958;
+    
     printf("Working...");
     
     while (!feof(f))
