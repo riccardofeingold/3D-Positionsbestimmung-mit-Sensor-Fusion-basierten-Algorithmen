@@ -1,5 +1,5 @@
 /*!
- * @file BHwMMaKF.ino Version 13.0
+ * @file BHwMMaKF.ino Version 20.0
  *
  * @mainpage Adafruit BME280 humidity, temperature & pressure sensor
  * @mainpage Adafruit Ultimate GPS modul
@@ -10,7 +10,9 @@
  *
  * This is a program for an embedded system that is able to give the 3D Position of the user. 
  * The focus was mainly on improving the height measurement, since this is the one which has 
- * the greatest error compared to the other coordinates.
+ * the greatest error compared to the other coordinates. The author used the barometric measurement, 
+ * but also the GPS height is included - it will be just not improved, since its accuracy depends on multiple 
+ * parameters. For the barometric height measurement there are only the air pressure and the temperature as parameters.
  * 
  * The main goal was to implement an Map-Matching algorithm for the arduino hardware. The Kalman Filter which is also included
  * in the code was simply a try, but since the Kalman Filter usually calculates the estimates with big matrices, the author decided therefore to simply implement
@@ -25,7 +27,7 @@
  * @section author Author
  *
  * Written by Riccardo Orion Feingold Student of the Kirchenfeld-High-School.
- * --> Last Update: 13.07.19 11:33
+ * --> Last Update: 14.11.19 6:35
  *
  */
 //LIBRARIES
@@ -86,12 +88,6 @@ MyFilterEstimator filter;
 MapMatching mm_one;//for baro calibration
 #define Pi 3.1415926
 
-//Kalman Filter
-float g;
-uint32_t t;
-KalmanFilter kf(602,10000,10,818);
-KalmanFilter kf1(602,10000,10,818);
-
 //SD Card Datalogger
 File logFile;
 
@@ -100,22 +96,20 @@ File logFile;
 Adafruit_GPS GPS(&mySerial);//Instantiate the GPS object
 #define GPSECHO false
 
-//SENSOR
+//BME280
 float SEALEVELPRESSURE_HPA = 1013.25;
 float SEALEVELPRESSURE_HPA_DWD = 1013.25;
-float SEALEVELPRESSURE_HPA_RP = 1013.25;//For the reference-point-calculation
 float T0 = 15;//Temperature at sea level
 float sealevel = 1013.25, sealevelDWD = 1013.25;
 float gradient = 0.0065;//Temperaturgradient T(auf Meereshöhe) = t(gemessen) + gradient*Höhe
 Adafruit_BME280 bme;//I2C
 
 uint16_t measurement_interval = 1000; //This is how fast the measured values are updated
-uint16_t gps_interval = 100;
-uint32_t GPSmeaPrev = 0;
 
 //LCD
 LiquidCrystal_I2C lcd(0x27,20,4);
 bool Backlight = true;
+uint8_t stopwatch = 0;//Every 10 seconds backlight will be set to false
 
 //KEYPAD
 const byte rows = 4;
@@ -150,7 +144,7 @@ double yPosition(double ay, double headingVel_gps, double headingVel_imu, double
 void InitializeSM();
 void keypadEvent(KeypadEvent key);
 
-//Interrupts
+//ISR
 boolean usingInterrupt = false;
 void useInterrupt(boolean);
 
@@ -178,15 +172,15 @@ void setup()
 
 void InitializeSM()
 { 
-  /********************/
-  /*SD Card Datalogger*/
-  /********************/
-  pinMode(10,OUTPUT);
+/********************/
+/*SD Card Datalogger*/
+/********************/
+  pinMode(10,OUTPUT);//setting pin 10 to OUTPUT
 
   //Here we're creating a new logging file to store our data
   if (!SD.begin(10,11,12,13)) Serial.println("Card init. failed");
   char filename[15];
-  strcpy(filename, "DELTAH00.TXT");
+  strcpy(filename, "HEIGHT00.TXT");
   for (uint8_t i = 0; i < 100; i++)
   {
     filename[6] = '0' + i/10;
@@ -205,11 +199,15 @@ void InitializeSM()
   Serial.print("Writing to ");
   Serial.println(filename);
   
-//LCD
+/********************/
+/*        LCD       */
+/********************/
   lcd.init();
   lcd.backlight();
   
-//GPS 
+/********************/
+/*        GPS       */
+/********************/
   GPS.begin(9600);
   GPS.sendCommand(PMTK_ENABLE_SBAS);//Enable search for SBAS satellite (works only with 1Hz output rate)
   GPS.sendCommand(PMTK_ENABLE_WAAS);//Enable DGPS to correct the postion data
@@ -218,9 +216,9 @@ void InitializeSM()
   //GPS.sendCommand(PMTK_SET_BAUD_57600);
   
   //mySerial.end();
-  //GPS.begin(57600);//new baudrate, so that we can use an update rat of 10 Hz
+  //GPS.begin(57600);//new baudrate, so that we can use an update rate of 10 Hz
   
-  GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);//Means nothing else than: print only RMC (lon,lat) and GGA (height over sealevel) data => both have the necessary data
+  GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);//Means nothing else than: print only RMC (lon,lat) and GGA (height over sealevel) data 
   GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);//Updating frequence 
   
   //GPS.sendCommand(PGCMD_ANTENNA);// Request updates on antenna status, comment out to keep quiet 
@@ -233,13 +231,20 @@ void InitializeSM()
   //Ask for firmware version
   mySerial.println(PMTK_Q_RELEASE);
   
-//STATE_MACHINE
+/********************/
+/*STATE_MACHINE     */
+/********************/
   curr_state = international;//First state
   
-//MyFilterEstimator: setting initial values for the filterLon and the filterLat
+/*********************/
+/*My_Filter_Estimator*/
+/*********************/
+//setting initial values for the filterLon and the filterLat
   filter.begin(xPos, yPos);//See initial values at the top under //BNO055 IMU
   
-//BME280
+/********************/
+/*BME280            */
+/********************/
   //checks the status of the barometric sensor
   bool status = bme.begin();
   if (!status)
@@ -256,12 +261,16 @@ void InitializeSM()
                   Adafruit_BME280::FILTER_X16, //Sampling rate: Filter
                   Adafruit_BME280::STANDBY_MS_0_5);
  
-//KEYPAD
+/********************/
+/*KEYPAD            */
+/********************/
   keypad.begin(makeKeymap(keys));//Initialize the keypad object 
 
   keypad.addEventListener(keypadEvent);//This EventListener becomes active if any key is pressed
 
-//IMU Sensor 
+/********************/
+/*IMU_SENSOR        */
+/********************/
   if (!bno.begin())
   {
     Serial.print("No BNO055 detected");
@@ -399,7 +408,7 @@ void displayCalStatus(void)
 }
 
 /*********************************************************************************************************************************************************/
-/*    INTERRUPTS    */
+/*    ISR    */
 /*********************************************************************************************************************************************************/
 
 // Interrupt is called once a millisecond, looks for any new GPS data, and stores it
@@ -433,12 +442,10 @@ void useInterrupt(boolean v)
 /*********************************************************************************************************************************************************/
 
 uint32_t MesurementPreviousMillis = millis();
-uint8_t stopwatch = 0;
 void loop() 
 {
-  // put your main code here, to run repeatedly:
   uint8_t key = keypad.getKey();//Without this the EventListener wouldn't work 
-  //if (key) Serial.print(key);//Just to know which key I pressed => acutally useless 
+  //if (key) Serial.print(key);//Just to know which key I pressed 
 
   if (!usingInterrupt)
   {
@@ -788,10 +795,14 @@ void COMPARE()
         logFile.println(",");
         logFile.flush();
       }
+    }else
+    {
+      lcd.setCursor(0,0);
+      lcd.print("Waiting for GPS...");
     }
   }
 
-  //Button b
+  //Button B
   if (BUTTON_FLAG_PRESSED[0])
   {
     curr_state = international;
@@ -799,6 +810,7 @@ void COMPARE()
     BUTTON_FLAG_HOLD[0] = false;
     BUTTON_FLAG_PRESSED[2] = false;
     BUTTON_FLAG_PRESSED[4] = false;
+    BUTTON_FLAG_PRESSED[5] = false;
   }
  
   //Button A
@@ -809,6 +821,7 @@ void COMPARE()
     BUTTON_FLAG_PRESSED[1] = false;
     BUTTON_FLAG_PRESSED[2] = false;
     BUTTON_FLAG_PRESSED[4] = false;
+    BUTTON_FLAG_PRESSED[5] = false;
   }
 
   //Button C
@@ -843,6 +856,7 @@ void MAP_MATCHING()
   float headingVel_gps;//Heading velocity calculated by gps
   float headingVel_imu;//heading velocity calculated by imu
   float gps_height, model_height;
+  float epsilon_0 = 0.0000000001;//is needed, so that we can check for a = 0 situation.
   
 
   //Used sensor for estimating the position and orientation  
@@ -852,16 +866,17 @@ void MAP_MATCHING()
   //read the magnetic field
   float mag_y = mag.y();
   float mag_x = mag.x();
+  
   //Rotation around the Z axis which is basically pointing towards the sky
   float heading_direction = 0;
-  if (int(mag_y) > 0) heading_direction = atan2(-mag_x,-mag_y)*180/Pi;
-  if (int(mag_y) == 0 && int(mag_x) > 0) heading_direction = -90;
-  if (int(mag_y) == 0 && int(mag_x) < 0) heading_direction = 90;
-  if (int(mag_x) == 0 && int(mag_y) > 0) heading_direction = 180;
-  if (int(mag_x) == 0 && int(mag_y) < 0) heading_direction = 0;
-  if (int(mag_y) < 0 && int(mag_x) > 0) heading_direction = atan2(-mag_x, -mag_y)*180/Pi;
-  if (int(mag_y) < 0 && int(mag_x) < 0) heading_direction = atan2(-mag_x, -mag_y)*180/Pi;
-
+  if (mag_y > 0) heading_direction = atan2(-mag_x,-mag_y)*180/Pi;
+  if (abs(mag_y) < epsilon_0 && mag_x > 0) heading_direction = -90;
+  if (abs(mag_y) < epsilon_0 && mag_x < 0) heading_direction = 90;
+  if (abs(mag_x) < epsilon_0 && mag_y > 0) heading_direction = 180;
+  if (abs(mag_x) < epsilon_0 && mag_y < 0) heading_direction = 0;
+  if (mag_y < 0 && mag_x > 0) heading_direction = atan2(-mag_x, -mag_y)*180/Pi;
+  if (mag_y < 0 && mag_x < 0) heading_direction = atan2(-mag_x, -mag_y)*180/Pi;
+  
   //Updates every seconds the display and stores data on the SD card
   if (millis() - MesurementPreviousMillis >= measurement_interval)
   {
@@ -870,12 +885,6 @@ void MAP_MATCHING()
     //ON/OFF OF THE BACKLIGHT
     stopwatch += 1;
     if (stopwatch >= 10) Backlight = false;
-
-    //Read velocity from imu 
-    headingVel_imu = ACCEL_VEL_TRANSITION*accel.y()-corrHeadingVel_imu;//Calculating the heading velocity based on measurements of the imu sensor
-    
-    //bias of the headingVel_imu
-    if ((int)headingVel_imu*10==0) corrHeadingVel_imu = headingVel_imu;
     
     //If we have a GPS Fix we read the speed in knots, convert it to m/s; MapMatching occurs in this if-statement
     if (GPS.fix) 
@@ -895,8 +904,8 @@ void MAP_MATCHING()
     model_height = model.search(raw_lon,raw_lat);
 
     //change the cali_dist to 15 if dgps is available
-    if (fixquality==2) mm_one.cali_dist = 15;
-    else mm_one.cali_dist = 20;
+    if (fixquality==2) mm_one.cali_dist = 225;//15 m squared!
+    else mm_one.cali_dist = 400;//20 m squared!
     
     //If this is false the Map-Matching System will start.
     if (mm_one.RESET)
@@ -908,7 +917,10 @@ void MAP_MATCHING()
       mm_one.begin(raw_lon, raw_lat, true);
       latitude = mm_one.yPos;
       longitude = mm_one.xPos;
-   
+
+      //set headingVel_gps to zero
+      headingVel_gps = 0;
+      
       //Calibrate barometer if a fix point is reached
       sealevel = bme.seaLevelForAltitude(mm_one.calibrate_BARO(), bme.readPressure()/100);
       sealevelDWD = bme.seaLevelForAltitudeDWD(mm_one.calibrate_BARO(), bme.readPressure())/100;
@@ -921,20 +933,29 @@ void MAP_MATCHING()
       
       //Getting heading velocity from MapMatching library
       headingVel_gps = sqrt(filter.distance);
-
+      
+      //Read velocity from imu 
+      //Calculating the heading velocity based on measurements of the imu sensor
+      //is the velocity change at the moment
+      headingVel_imu = ACCEL_VEL_TRANSITION*accel.y()-corrHeadingVel_imu;
+      
+      //bias of the headingVel_imu
+      if (headingVel_imu < 0.01) corrHeadingVel_imu = headingVel_imu;
+      
       //Calculating the xPos and yPos in degrees
       //angle_gps and angle_gyro are used in a complementary filter to estimate heading direction
       //xPos, yPos, xVel and yVel are global variables
       longitude = xPosition(accel.y(), headingVel_gps, headingVel_imu, heading_direction, fixquality);//We use here the y acceleration, because it is the axis which is always pointing into the direction of movement
       latitude = yPosition(accel.y(), headingVel_gps, headingVel_imu, heading_direction, fixquality);
 
-      //calibrate GPS
+      //calibrate GPS => Measurement have shown that it's not necessary 
       mm_one.calibrate_GPS(longitude, latitude, true);
       mm_one_dist = mm_one.distance();
       latitude = mm_one.yPos;
       longitude = mm_one.xPos;
       
       //as a control, in the case if the calibrated GPS values are worse than the normal ones 
+      //
       mm_one.calibrate_GPS(raw_lon,raw_lat,false);
       mm_dist = mm_one.distance();
       
@@ -1166,7 +1187,7 @@ double xPosition(double ay, double headingVel_gps, double headingVel_imu, double
   //Zeroing the velocity if no movement is present, because the gps sends always some small velocity values although nothing is moving (random process)
   if (fixquality==0)
   {
-    if ((int)headingVel_imu*10==0) 
+    if (headingVel_imu < 0.01) 
     {
       xVel = 0;
       yVel = 0;
@@ -1175,7 +1196,7 @@ double xPosition(double ay, double headingVel_gps, double headingVel_imu, double
     }
   }else
   {
-    if ((int)headingVel_gps*10==0) 
+    if (headingVel_gps < 0.01) 
     {
       xVel = 0;
       yVel = 0;
@@ -1248,7 +1269,7 @@ double yPosition(double ay, double headingVel_gps, double headingVel_imu, double
   //Zeroing the velocity if no movement is present, because the gps sends always some small velocity values although nothing is moving (random process)  
   if (fixquality==0)
   {
-    if ((int)headingVel_imu*10==0) 
+    if (headingVel_imu < 0.01) 
     {
       xVel = 0;
       yVel = 0;
@@ -1257,7 +1278,7 @@ double yPosition(double ay, double headingVel_gps, double headingVel_imu, double
     }
   }else
   {
-    if ((int)headingVel_gps*10==0) 
+    if (headingVel_gps < 0.01) 
     {
       xVel = 0;
       yVel = 0;

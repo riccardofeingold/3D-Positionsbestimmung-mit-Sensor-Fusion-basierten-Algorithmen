@@ -881,9 +881,6 @@ class HeightModel
   public:
     //Find the three reference point near the user's location
     int search(float x, float y);
-
-    //Required distance 
-    long distance = 80000;
     
     //To store the coordinates of the first reference point
     int height_1 = 0;

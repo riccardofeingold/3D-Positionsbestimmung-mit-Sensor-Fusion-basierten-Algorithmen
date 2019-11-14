@@ -65,8 +65,8 @@ void MapMatching::calibrate_GPS(double x, double y, bool calibrate)
   }
 
   //calculating the exact distance between the nearest point and user's position
-  if (calibrate) dist = sqrt((latitude-(y+compensation_lat))*DEG_2_METER*(latitude-(y+compensation_lat))*DEG_2_METER+(longitude-(x+compensation_lon))*DEG_2_METER*(longitude-(x+compensation_lon))*DEG_2_METER);
-  else dist = sqrt((latitude-y)*DEG_2_METER*(latitude-y)*DEG_2_METER+(longitude-x)*DEG_2_METER*(longitude-x)*DEG_2_METER);
+  if (calibrate) dist = (latitude-(y+compensation_lat))*DEG_2_METER*(latitude-(y+compensation_lat))*DEG_2_METER+(longitude-(x+compensation_lon))*DEG_2_METER*(longitude-(x+compensation_lon))*DEG_2_METER;
+  else dist = (latitude-y)*DEG_2_METER*(latitude-y)*DEG_2_METER+(longitude-x)*DEG_2_METER*(longitude-x)*DEG_2_METER;
   
   if (dist <= cali_dist) 
   {

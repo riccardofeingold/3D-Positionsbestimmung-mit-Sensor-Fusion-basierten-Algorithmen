@@ -1,5 +1,5 @@
 #include "KalmanFilter.h"
-
+//The the meassurements of the IMU-Sensor is used as a model
 KalmanFilter::KalmanFilter(float X0, float P0, float R, float q)
 {
     model_state = X0;
