@@ -2,6 +2,7 @@
 
 float lat, lon, height;
 float lat_max, lat_min, lon_max, lon_min;
+int counter = 0;
 
 int main(void)
 {
@@ -34,11 +35,12 @@ int main(void)
             if (lon <= lon_max && lon >= lon_min)
             {
                 fprintf(g,"%f,%f,%f,\n",lat,lon,height);
+                counter += 1;
             }
         }
     }
     fclose(f);
     fclose(g),
-    printf("Finished!");
+    printf("MAX %d ", counter);
     return 0;
 }
