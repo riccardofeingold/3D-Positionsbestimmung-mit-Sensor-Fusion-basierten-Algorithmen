@@ -2,4 +2,10 @@
 .DS_store
 
 #ignore files starting with ~$*.*
-~$*.*
+~$*.txt
+~$*.py
+~$*.docx
+~$*.cpp
+~$*.c
+~$*.h
+~$*.xlsx
