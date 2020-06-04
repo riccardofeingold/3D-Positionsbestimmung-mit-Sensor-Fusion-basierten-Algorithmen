@@ -1,0 +1,963 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7050) (preloaded format=pdflatex 2019.7.23)  30 JUL 2019 10:09
+entering extended mode
+**./main.tex
+(main.tex
+LaTeX2e <2018-12-01>
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/koma
+-script/scrreprt.cls"
+Document Class: scrreprt 2019/02/01 v3.26b KOMA-Script document class (report)
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/koma
+-script/scrkbase.sty"
+Package: scrkbase 2019/02/01 v3.26b KOMA-Script package (KOMA-Script-dependent 
+basics and keyval usage)
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/koma
+-script/scrbase.sty"
+Package: scrbase 2019/02/01 v3.26b KOMA-Script package (KOMA-Script-independent
+ basics and keyval usage)
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/grap
+hics/keyval.sty"
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks14
+)
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/koma
+-script/scrlfile.sty"
+Package: scrlfile 2019/02/01 v3.26b KOMA-Script package (loading files)
+)))
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/koma
+-script/tocbasic.sty"
+Package: tocbasic 2019/02/01 v3.26b KOMA-Script package (handling toc-files)
+\scr@dte@tocline@numberwidth=\skip41
+\scr@dte@tocline@numbox=\box27
+)
+Package tocbasic Info: omitting babel extension for `toc'
+(tocbasic)             because of feature `nobabel' available
+(tocbasic)             for `toc' on input line 136.
+Class scrreprt Info: File `scrsize11pt.clo' used instead of
+(scrreprt)           file `scrsize11.clo' to setup font sizes on input line 237
+3.
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/koma
+-script/scrsize11pt.clo"
+File: scrsize11pt.clo 2019/02/01 v3.26b KOMA-Script font size class option (11p
+t)
+)
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/koma
+-script/typearea.sty"
+Package: typearea 2019/02/01 v3.26b KOMA-Script package (type area)
+\ta@bcor=\skip42
+\ta@div=\count80
+\ta@hblk=\skip43
+\ta@vblk=\skip44
+\ta@temp=\skip45
+\footheight=\skip46
+Package typearea Info: These are the values describing the layout:
+(typearea)             DIV  = 10
+(typearea)             BCOR = 0.0pt
+(typearea)             \paperwidth      = 597.50793pt
+(typearea)              \textwidth      = 418.25555pt
+(typearea)              DIV departure   = -6%
+(typearea)              \evensidemargin = 17.3562pt
+(typearea)              \oddsidemargin  = 17.3562pt
+(typearea)             \paperheight     = 845.04694pt
+(typearea)              \textheight     = 595.80026pt
+(typearea)              \topmargin      = -25.16531pt
+(typearea)              \headheight     = 17.0pt
+(typearea)              \headsep        = 20.40001pt
+(typearea)              \topskip        = 11.0pt
+(typearea)              \footskip       = 47.6pt
+(typearea)              \baselineskip   = 13.6pt
+(typearea)              on input line 1715.
+)
+\c@part=\count81
+\c@chapter=\count82
+\c@section=\count83
+\c@subsection=\count84
+\c@subsubsection=\count85
+\c@paragraph=\count86
+\c@subparagraph=\count87
+\scr@dte@chapter@maxnumwidth=\skip47
+Class scrreprt Info: using compatibility default `afterindent=bysign'
+(scrreprt)           for `\chapter on input line 5305.
+\scr@dte@section@maxnumwidth=\skip48
+Class scrreprt Info: using compatibility default `runin=bysign'
+(scrreprt)           for `\section on input line 5315.
+Class scrreprt Info: using compatibility default `afterindent=bysign'
+(scrreprt)           for `\section on input line 5315.
+\scr@dte@part@maxnumwidth=\skip49
+Class scrreprt Info: using compatibility default `afterindent=true'
+(scrreprt)           for `\part on input line 5324.
+\scr@dte@subsection@maxnumwidth=\skip50
+Class scrreprt Info: using compatibility default `runin=bysign'
+(scrreprt)           for `\subsection on input line 5334.
+Class scrreprt Info: using compatibility default `afterindent=bysign'
+(scrreprt)           for `\subsection on input line 5334.
+\scr@dte@subsubsection@maxnumwidth=\skip51
+Class scrreprt Info: using compatibility default `runin=bysign'
+(scrreprt)           for `\subsubsection on input line 5344.
+Class scrreprt Info: using compatibility default `afterindent=bysign'
+(scrreprt)           for `\subsubsection on input line 5344.
+\scr@dte@paragraph@maxnumwidth=\skip52
+Class scrreprt Info: using compatibility default `runin=bysign'
+(scrreprt)           for `\paragraph on input line 5354.
+Class scrreprt Info: using compatibility default `afterindent=bysign'
+(scrreprt)           for `\paragraph on input line 5354.
+\scr@dte@subparagraph@maxnumwidth=\skip53
+Class scrreprt Info: using compatibility default `runin=bysign'
+(scrreprt)           for `\subparagraph on input line 5364.
+Class scrreprt Info: using compatibility default `afterindent=bysign'
+(scrreprt)           for `\subparagraph on input line 5364.
+\abovecaptionskip=\skip54
+\belowcaptionskip=\skip55
+\c@pti@nb@sid@b@x=\box28
+Package tocbasic Info: omitting babel extension for `lof'
+(tocbasic)             because of feature `nobabel' available
+(tocbasic)             for `lof' on input line 6613.
+\scr@dte@figure@maxnumwidth=\skip56
+\c@figure=\count88
+Package tocbasic Info: omitting babel extension for `lot'
+(tocbasic)             because of feature `nobabel' available
+(tocbasic)             for `lot' on input line 6630.
+\scr@dte@table@maxnumwidth=\skip57
+\c@table=\count89
+Class scrreprt Info: Redefining `\numberline' on input line 6799.
+\bibindent=\dimen102
+)
+
+Package typearea Warning: Bad type area settings!
+(typearea)                The detected line width is about 22%
+(typearea)                larger than the heuristically estimated maximum
+(typearea)                limit of typographical good line width.
+(typearea)                You should e.g. decrease DIV, increase fontsize
+(typearea)                or change papersize.
+
+Package typearea Info: These are the values describing the layout:
+(typearea)             DIV  = 15
+(typearea)             BCOR = 0.0pt
+(typearea)             \paperwidth      = 597.50793pt
+(typearea)              \textwidth      = 478.00635pt
+(typearea)              DIV departure   = -22%
+(typearea)              \evensidemargin = -12.5192pt
+(typearea)              \oddsidemargin  = -12.5192pt
+(typearea)             \paperheight     = 845.04694pt
+(typearea)              \textheight     = 677.4003pt
+(typearea)              \topmargin      = -53.33354pt
+(typearea)              \headheight     = 17.0pt
+(typearea)              \headsep        = 20.40001pt
+(typearea)              \topskip        = 11.0pt
+(typearea)              \footskip       = 47.6pt
+(typearea)              \baselineskip   = 13.6pt
+(typearea)              on input line 4.
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/generic/ba
+bel/babel.sty"
+Package: babel 2019/07/19 3.33 The Babel package
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/generic/ba
+bel/switch.def"
+File: switch.def 2019/07/19 3.33 Babel switching mechanism
+)
+*************************************
+* Local config file bblopts.cfg used
+*
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/arab
+i/bblopts.cfg"
+File: bblopts.cfg 2005/09/08 v0.1 add Arabic and Farsi to "declared" options of
+ babel
+)
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/babe
+l-german/ngerman.ldf"
+Language: ngerman 2018/12/08 v2.11 German support for babel (post-1996 orthogra
+phy)
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/babe
+l-german/ngermanb.ldf"
+Language: ngermanb 2018/12/08 v2.11 German support for babel (post-1996 orthogr
+aphy)
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/generic/ba
+bel/babel.def"
+File: babel.def 2019/07/19 3.33 Babel common definitions
+\babel@savecnt=\count90
+\U@D=\dimen103
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/generic/ba
+bel/txtbabel.def")
+\bbl@dirlevel=\count91
+)
+
+Package babel Warning: No hyphenation patterns were preloaded for
+(babel)                the language `German (new orthography)' into the format.
+
+(babel)                Please, configure your TeX system to add them and
+(babel)                rebuild the format. Now I will use the patterns
+(babel)                preloaded for \language=0 instead on input line 47.
+
+\l@ngerman = a dialect from \language0
+Package babel Info: Making " an active character on input line 121.
+)))
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/base
+/inputenc.sty"
+Package: inputenc 2018/08/11 v1.3c Input encoding file
+\inpenc@prehook=\toks15
+\inpenc@posthook=\toks16
+)
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/base
+/fontenc.sty"
+Package: fontenc 2018/08/11 v2.0j Standard LaTeX package
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/base
+/t1enc.def"
+File: t1enc.def 2018/08/11 v2.0j Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 48.
+))
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/lm/l
+modern.sty"
+Package: lmodern 2009/10/30 v1.6 Latin Modern Fonts
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  OT1/cmr/m/n --> OT1/lmr/m/n on input line 22.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `normal'
+(Font)                  OML/cmm/m/it --> OML/lmm/m/it on input line 23.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
+(Font)                  OMS/cmsy/m/n --> OMS/lmsy/m/n on input line 24.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
+(Font)                  OMX/cmex/m/n --> OMX/lmex/m/n on input line 25.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/lmr/bx/n on input line 26.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `bold'
+(Font)                  OML/cmm/b/it --> OML/lmm/b/it on input line 27.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  OMS/cmsy/b/n --> OMS/lmsy/b/n on input line 28.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  OMX/cmex/m/n --> OMX/lmex/m/n on input line 29.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
+(Font)                  OT1/cmr/bx/n --> OT1/lmr/bx/n on input line 31.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
+(Font)                  OT1/cmss/m/n --> OT1/lmss/m/n on input line 32.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
+(Font)                  OT1/cmr/m/it --> OT1/lmr/m/it on input line 33.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
+(Font)                  OT1/cmtt/m/n --> OT1/lmtt/m/n on input line 34.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/lmr/bx/n on input line 35.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
+(Font)                  OT1/cmss/bx/n --> OT1/lmss/bx/n on input line 36.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
+(Font)                  OT1/cmr/bx/it --> OT1/lmr/bx/it on input line 37.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
+(Font)                  OT1/cmtt/m/n --> OT1/lmtt/m/n on input line 38.
+)
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/base
+/fontenc.sty"
+Package: fontenc 2018/08/11 v2.0j Standard LaTeX package
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/base
+/t1enc.def"
+File: t1enc.def 2018/08/11 v2.0j Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 48.
+))
+LaTeX Font Info:    Try loading font information for T1+Georgia on input line 2
+0.
+LaTeX Font Info:    No file T1Georgia.fd. on input line 20.
+
+
+LaTeX Font Warning: Font shape `T1/Georgia/m/n' undefined
+(Font)              using `T1/cmr/m/n' instead on input line 20.
+
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/grap
+hics/graphicx.sty"
+Package: graphicx 2017/06/01 v1.1a Enhanced LaTeX Graphics (DPC,SPQR)
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/grap
+hics/graphics.sty"
+Package: graphics 2017/06/25 v1.2c Standard LaTeX Graphics (DPC,SPQR)
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/grap
+hics/trig.sty"
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+)
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/grap
+hics-cfg/graphics.cfg"
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 99.
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/grap
+hics-def/pdftex.def"
+File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen104
+\Gin@req@width=\dimen105
+)
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/svg/
+svg.sty"
+Package: svg 2018/11/12 v2.02b (include SVG pictures)
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/generic/ob
+erdiek/ifpdf.sty"
+Package: ifpdf 2018/09/07 v3.3 Provides the ifpdf switch
+)
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/generic/ob
+erdiek/ifluatex.sty"
+Package: ifluatex 2016/05/16 v1.4 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/generic/if
+xetex/ifxetex.sty"
+Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
+)
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/generic/ob
+erdiek/pdftexcmds.sty"
+Package: pdftexcmds 2018/09/10 v0.29 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/generic/ob
+erdiek/infwarerr.sty"
+Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
+)
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/generic/ob
+erdiek/ltxcmds.sty"
+Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/tool
+s/shellesc.sty"
+Package: shellesc 2016/06/07 v0.02a unified shell escape interface for LaTeX
+Package shellesc Info: Restricted shell escape enabled on input line 69.
+)
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/trim
+spaces/trimspaces.sty"
+Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
+)
+\svg@box=\box29
+\c@svg@param@lastpage=\count92
+\c@svg@param@currpage=\count93
+)
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/xcol
+or/xcolor.sty"
+Package: xcolor 2016/05/11 v2.12 LaTeX color extensions (UK)
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/grap
+hics-cfg/color.cfg"
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 225.
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1348.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1352.
+Package xcolor Info: Model `RGB' extended on input line 1364.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1366.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1367.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1368.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
+)
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/koma
+-script/scrlayer-scrpage.sty"
+Package: scrlayer-scrpage 2019/02/01 v3.26b KOMA-Script package (end user inter
+face for scrlayer)
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/koma
+-script/scrlayer.sty"
+Package: scrlayer 2019/02/01 v3.26b KOMA-Script package (defining layers and pa
+ge styles)
+Package scrlayer Info: Using already defined \footheight
+(scrlayer)             hoping, that this is a length and
+(scrlayer)             not only a macro on input line 109.
+Package scrlayer Info: patching LaTeX kernel macro \pagestyle on input line 208
+3.
+)
+Package scrlayer-scrpage Info: Makeing stand-alone element `pagehead' from
+(scrlayer-scrpage)             alias to `pageheadfoot' on input line 1241.
+Package scrlayer-scrpage Info: deactivating warning for font element
+(scrlayer-scrpage)             `pagefoot' on input line 1268.
+)
+Package scrlayer-scrpage Info: auto-selection of `pagestyleset=KOMA-Script'.
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/csqu
+otes/csquotes.sty"
+Package: csquotes 2019/05/10 v5.2e context-sensitive quotations (JAW)
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/etoo
+lbox/etoolbox.sty"
+Package: etoolbox 2018/08/19 v2.5f e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count94
+)
+\csq@reset=\count95
+\csq@gtype=\count96
+\csq@glevel=\count97
+\csq@qlevel=\count98
+\csq@maxlvl=\count99
+\csq@tshold=\count100
+\csq@ltx@everypar=\toks17
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/csqu
+otes/csquotes.def"
+File: csquotes.def 2019/05/10 v5.2e csquotes generic definitions (JAW)
+)
+Package csquotes Info: Trying to load configuration file 'csquotes.cfg'...
+Package csquotes Info: ... configuration file loaded successfully.
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/csqu
+otes/csquotes.cfg"
+File: csquotes.cfg 
+))
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/bibl
+atex/biblatex.sty"
+Package: biblatex 2018/11/02 v3.12 programmable bibliographies (PK/MW)
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/ober
+diek/kvoptions.sty"
+Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/generic/ob
+erdiek/kvsetkeys.sty"
+Package: kvsetkeys 2016/05/16 v1.17 Key value parser (HO)
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/generic/ob
+erdiek/etexcmds.sty"
+Package: etexcmds 2016/05/16 v1.6 Avoid name clashes with e-TeX commands (HO)
+)))
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/logr
+eq/logreq.sty"
+Package: logreq 2010/08/04 v1.0 xml request logger
+\lrq@indent=\count101
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/logr
+eq/logreq.def"
+File: logreq.def 2010/08/04 v1.0 logreq spec v1.0
+))
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/base
+/ifthen.sty"
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+)
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/url/
+url.sty"
+\Urlmuskip=\muskip10
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+\c@tabx@nest=\count102
+\c@listtotal=\count103
+\c@listcount=\count104
+\c@liststart=\count105
+\c@liststop=\count106
+\c@citecount=\count107
+\c@citetotal=\count108
+\c@multicitecount=\count109
+\c@multicitetotal=\count110
+\c@instcount=\count111
+\c@maxnames=\count112
+\c@minnames=\count113
+\c@maxitems=\count114
+\c@minitems=\count115
+\c@citecounter=\count116
+\c@maxcitecounter=\count117
+\c@savedcitecounter=\count118
+\c@uniquelist=\count119
+\c@uniquename=\count120
+\c@refsection=\count121
+\c@refsegment=\count122
+\c@maxextratitle=\count123
+\c@maxextratitleyear=\count124
+\c@maxextraname=\count125
+\c@maxextradate=\count126
+\c@maxextraalpha=\count127
+\c@abbrvpenalty=\count128
+\c@highnamepenalty=\count129
+\c@lownamepenalty=\count130
+\c@maxparens=\count131
+\c@parenlevel=\count132
+\blx@tempcnta=\count133
+\blx@tempcntb=\count134
+\blx@tempcntc=\count135
+\blx@maxsection=\count136
+\blx@maxsegment@0=\count137
+\blx@notetype=\count138
+\blx@parenlevel@text=\count139
+\blx@parenlevel@foot=\count140
+\blx@sectionciteorder@0=\count141
+\blx@entrysetcounter=\count142
+\labelnumberwidth=\skip58
+\labelalphawidth=\skip59
+\biblabelsep=\skip60
+\bibitemsep=\skip61
+\bibnamesep=\skip62
+\bibinitsep=\skip63
+\bibparsep=\skip64
+\bibhang=\skip65
+\blx@bcfin=\read1
+\blx@bcfout=\write3
+\c@mincomprange=\count143
+\c@maxcomprange=\count144
+\c@mincompwidth=\count145
+Package biblatex Info: Trying to load biblatex default data model...
+Package biblatex Info: ... file 'blx-dm.def' found.
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/bibl
+atex/blx-dm.def"
+File: blx-dm.def 2018/11/02 v3.12 biblatex localization (PK/MW)
+)
+Package biblatex Info: Trying to load biblatex style data model...
+Package biblatex Info: ... file 'ieee.dbx' not found.
+Package biblatex Info: Trying to load biblatex custom data model...
+Package biblatex Info: ... file 'biblatex-dm.cfg' not found.
+\c@afterword=\count146
+\c@savedafterword=\count147
+\c@annotator=\count148
+\c@savedannotator=\count149
+\c@author=\count150
+\c@savedauthor=\count151
+\c@bookauthor=\count152
+\c@savedbookauthor=\count153
+\c@commentator=\count154
+\c@savedcommentator=\count155
+\c@editor=\count156
+\c@savededitor=\count157
+\c@editora=\count158
+\c@savededitora=\count159
+\c@editorb=\count160
+\c@savededitorb=\count161
+\c@editorc=\count162
+\c@savededitorc=\count163
+\c@foreword=\count164
+\c@savedforeword=\count165
+\c@holder=\count166
+\c@savedholder=\count167
+\c@introduction=\count168
+\c@savedintroduction=\count169
+\c@namea=\count170
+\c@savednamea=\count171
+\c@nameb=\count172
+\c@savednameb=\count173
+\c@namec=\count174
+\c@savednamec=\count175
+\c@translator=\count176
+\c@savedtranslator=\count177
+\c@shortauthor=\count178
+\c@savedshortauthor=\count179
+\c@shorteditor=\count180
+\c@savedshorteditor=\count181
+\c@labelname=\count182
+\c@savedlabelname=\count183
+\c@institution=\count184
+\c@savedinstitution=\count185
+\c@lista=\count186
+\c@savedlista=\count187
+\c@listb=\count188
+\c@savedlistb=\count189
+\c@listc=\count190
+\c@savedlistc=\count191
+\c@listd=\count192
+\c@savedlistd=\count193
+\c@liste=\count194
+\c@savedliste=\count195
+\c@listf=\count196
+\c@savedlistf=\count197
+\c@location=\count198
+\c@savedlocation=\count199
+\c@organization=\count266
+\c@savedorganization=\count267
+\c@origlocation=\count268
+\c@savedoriglocation=\count269
+\c@origpublisher=\count270
+\c@savedorigpublisher=\count271
+\c@publisher=\count272
+\c@savedpublisher=\count273
+\c@language=\count274
+\c@savedlanguage=\count275
+\c@origlanguage=\count276
+\c@savedoriglanguage=\count277
+\c@pageref=\count278
+\c@savedpageref=\count279
+\shorthandwidth=\skip66
+\shortjournalwidth=\skip67
+\shortserieswidth=\skip68
+\shorttitlewidth=\skip69
+\shortauthorwidth=\skip70
+\shorteditorwidth=\skip71
+\locallabelnumberwidth=\skip72
+\locallabelalphawidth=\skip73
+\localshorthandwidth=\skip74
+\localshortjournalwidth=\skip75
+\localshortserieswidth=\skip76
+\localshorttitlewidth=\skip77
+\localshortauthorwidth=\skip78
+\localshorteditorwidth=\skip79
+Package biblatex Info: Trying to load compatibility code...
+Package biblatex Info: ... file 'blx-compat.def' found.
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/bibl
+atex/blx-compat.def"
+File: blx-compat.def 2018/11/02 v3.12 biblatex compatibility (PK/MW)
+)
+Package biblatex Info: Trying to load generic definitions...
+Package biblatex Info: ... file 'biblatex.def' found.
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/bibl
+atex/biblatex.def"
+File: biblatex.def 2018/11/02 v3.12 biblatex compatibility (PK/MW)
+\c@textcitecount=\count280
+\c@textcitetotal=\count281
+\c@textcitemaxnames=\count282
+\c@biburlnumpenalty=\count283
+\c@biburlucpenalty=\count284
+\c@biburllcpenalty=\count285
+\c@smartand=\count286
+)
+Package biblatex Info: Trying to load bibliography style 'ieee'...
+Package biblatex Info: ... file 'ieee.bbx' found.
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/bibl
+atex-ieee/ieee.bbx"
+File: ieee.bbx 2019/06/19 v1.3a biblatex bibliography style
+Package biblatex Info: Trying to load bibliography style 'numeric-comp'...
+Package biblatex Info: ... file 'numeric-comp.bbx' found.
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/bibl
+atex/bbx/numeric-comp.bbx"
+File: numeric-comp.bbx 2018/11/02 v3.12 biblatex bibliography style (PK/MW)
+Package biblatex Info: Trying to load bibliography style 'numeric'...
+Package biblatex Info: ... file 'numeric.bbx' found.
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/bibl
+atex/bbx/numeric.bbx"
+File: numeric.bbx 2018/11/02 v3.12 biblatex bibliography style (PK/MW)
+Package biblatex Info: Trying to load bibliography style 'standard'...
+Package biblatex Info: ... file 'standard.bbx' found.
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/bibl
+atex/bbx/standard.bbx"
+File: standard.bbx 2018/11/02 v3.12 biblatex bibliography style (PK/MW)
+\c@bbx:relatedcount=\count287
+\c@bbx:relatedtotal=\count288
+))))
+Package biblatex Info: Trying to load citation style 'ieee'...
+Package biblatex Info: ... file 'ieee.cbx' found.
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/bibl
+atex-ieee/ieee.cbx"
+File: ieee.cbx 2019/06/19 v1.3a biblatex citation style
+Package biblatex Info: Trying to load citation style 'numeric-comp'...
+Package biblatex Info: ... file 'numeric-comp.cbx' found.
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/bibl
+atex/cbx/numeric-comp.cbx"
+File: numeric-comp.cbx 2018/11/02 v3.12 biblatex citation style (PK/MW)
+\c@cbx@tempcnta=\count289
+\c@cbx@tempcntb=\count290
+Package biblatex Info: Redefining '\cite'.
+Package biblatex Info: Redefining '\parencite'.
+Package biblatex Info: Redefining '\footcite'.
+Package biblatex Info: Redefining '\footcitetext'.
+Package biblatex Info: Redefining '\smartcite'.
+Package biblatex Info: Redefining '\supercite'.
+Package biblatex Info: Redefining '\textcite'.
+Package biblatex Info: Redefining '\textcites'.
+Package biblatex Info: Redefining '\cites'.
+Package biblatex Info: Redefining '\parencites'.
+Package biblatex Info: Redefining '\smartcites'.
+)
+Package biblatex Info: Redefining '\cite'.
+Package biblatex Info: Redefining '\cites'.
+)
+Package biblatex Info: Trying to load configuration file...
+Package biblatex Info: ... file 'biblatex.cfg' found.
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/bibl
+atex/biblatex.cfg"
+File: biblatex.cfg 
+))
+Package csquotes Info: Checking for multilingual support...
+Package csquotes Info: ... found 'babel' package.
+Package csquotes Info: Adjusting default style.
+Package csquotes Info: Redefining alias 'default' -> 'ngerman'.
+Package biblatex Info: Trying to load language 'ngerman'...
+Package biblatex Info: ... file 'ngerman.lbx' found.
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/bibl
+atex/lbx/ngerman.lbx"
+File: ngerman.lbx 2018/11/02 v3.12 biblatex localization (PK/MW)
+Package biblatex Info: Trying to load language 'german'...
+Package biblatex Info: ... file 'german.lbx' found.
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/bibl
+atex/lbx/german.lbx"
+File: german.lbx 2018/11/02 v3.12 biblatex localization (PK/MW)
+)
+Package biblatex Info: Trying to load language 'german'...
+Package biblatex Info: ... file 'german.lbx' found.
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/bibl
+atex/lbx/german.lbx"
+File: german.lbx 2018/11/02 v3.12 biblatex localization (PK/MW)
+)) (main.aux)
+\openout1 = `main.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Try loading font information for T1+lmr on input line 63.
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/lm/t
+1lmr.fd"
+File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/context/ba
+se/mkii/supp-pdf.mkii"
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count291
+\scratchdimen=\dimen106
+\scratchbox=\box30
+\nofMPsegments=\count292
+\nofMParguments=\count293
+\everyMPshowfont=\toks18
+\MPscratchCnt=\count294
+\MPscratchDim=\dimen107
+\MPnumerator=\count295
+\makeMPintoPDFobject=\count296
+\everyMPtoPDFconversion=\toks19
+)
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/ober
+diek/epstopdf-base.sty"
+Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/ober
+diek/grfext.sty"
+Package: grfext 2016/05/16 v1.2 Manage graphics extensions (HO)
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/generic/ob
+erdiek/kvdefinekeys.sty"
+Package: kvdefinekeys 2016/05/16 v1.4 Define keys (HO)
+))
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+38.
+Package grfext Info: Graphics extension search list:
+(grfext)             [.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPE
+G,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 456.
+)
+Package biblatex Info: Input encoding 'utf8' detected.
+Package biblatex Info: Automatic encoding selection.
+(biblatex)             Assuming data encoding 'utf8'.
+\openout3 = `main.bcf'.
+
+Package biblatex Info: Trying to load bibliographic data...
+Package biblatex Info: ... file 'main.bbl' found.
+ (main.bbl)
+Package biblatex Info: Reference section=0 on input line 63.
+Package biblatex Info: Reference segment=0 on input line 63.
+LaTeX Font Info:    Try loading font information for T1+lmss on input line 66.
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/lm/t
+1lmss.fd"
+File: t1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)
+LaTeX Font Info:    Try loading font information for OT1+lmr on input line 66.
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/lm/o
+t1lmr.fd"
+File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)
+LaTeX Font Info:    Try loading font information for OML+lmm on input line 66.
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/lm/o
+mllmm.fd"
+File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)
+LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 66.
+
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/lm/o
+mslmsy.fd"
+File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)
+LaTeX Font Info:    Try loading font information for OMX+lmex on input line 66.
+
+
+("/Users/orion/Library/Application Support/MiKTeX/texmfs/install/tex/latex/lm/o
+mxlmex.fd"
+File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <14.4> on input line 66.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10> on input line 66.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7> on input line 66.
+
+
+Package svg Warning: You didn't enable `shell escape' (or `write18')
+(svg)                so it wasn't possible to launch the Inkscape export
+(svg)                for `bilder/logo.svg' on input line 66.
+
+
+! Package svg Error: File `logo_svg-tex.pdf' is missing.
+
+See the svg package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.66 \tableofcontents
+                     
+Did you run the export with Inkscape? There's no file
+`./svg-inkscape/logo_svg-tex.pdf'
+although `bilder/logo.svg' was found.
+
+
+! Package svg Error: File `logo_svg-tex.pdf_tex' is missing.
+
+See the svg package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.66 \tableofcontents
+                     
+Did you run the export with Inkscape? There's no file
+`./svg-inkscape/logo_svg-tex.pdf_tex'
+although `bilder/logo.svg' was found.
+
+
+! LaTeX Error: There's no line here to end.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.66 \tableofcontents
+                     
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+[1
+
+
+
+{/Users/orion/Library/Application Support/MiKTeX/texmfs/data/pdftex/config/pdft
+ex.map}] (main.toc
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10.95> on input line 12.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <8> on input line 12.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <6> on input line 12.
+)
+\tf@toc=\write4
+\openout4 = `main.toc'.
+
+ (Texte/Vorwort.tex [2
+
+]
+chapter 1.
+) (Texte/Abstrakt.tex [3
+
+]
+chapter 2.
+) (Texte/Einleitung.tex [4
+
+]
+chapter 3.
+
+Overfull \hbox (6.22627pt too wide) in paragraph at lines 2--3
+\T1/lmr/m/n/10.95 Verkehrsmittel genaue Positionsdaten benötigen. Sie erlauben 
+nicht nur eine Standort-Abfrage, sondern
+ []
+
+) (Texte/Hoehenmessung.tex [5
+
+]
+chapter 4.
+
+LaTeX Warning: Citation '"Wikipedia:H\IeC {\"o}henmessung"' on page 6 undefined
+ on input line 2.
+
+
+Overfull \hbox (8.18683pt too wide) in paragraph at lines 2--3
+\T1/lmr/m/n/10.95 Die Höhenmessung - ein Teilgebiet der Geodäsie, sowie teilwei
+se auch der Topografie und der Ingenieurs-
+ []
+
+) (Texte/IMU.tex [6
+
+]
+chapter 5.
+) (Texte/UserInterface.tex [7
+
+]
+chapter 6.
+) (Texte/Methoden.tex [8
+
+]
+chapter 7.
+) (Texte/Resultate.tex [9
+
+]
+chapter 8.
+) (Texte/Diskussion.tex [10
+
+]
+chapter 9.
+) [11
+
+] (main.lof)
+\tf@lof=\write5
+\openout5 = `main.lof'.
+
+ [12
+
+] (main.aux)
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+
+LaTeX Warning: There were undefined references.
+
+
+Package biblatex Warning: Please (re)run Biber on the file:
+(biblatex)                main
+(biblatex)                and rerun LaTeX afterwards.
+
+Package logreq Info: Writing requests to 'main.run.xml'.
+\openout1 = `main.run.xml'.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 14257 strings out of 494857
+ 290264 string characters out of 3176544
+ 878122 words of memory out of 3000000
+ 17692 multiletter control sequences out of 15000+200000
+ 55393 words of font info for 45 fonts, out of 3000000 for 9000
+ 2 hyphenation exceptions out of 8191
+ 47i,19n,71p,9085b,2203s stack positions out of 5000i,500n,10000p,200000b,50000s
+{/Users/orion/Library/Application Support/MiKTeX/texmfs/install/fonts/enc/dvi
+ps/lm/lm-ec.enc}</Users/orion/Library/Application Support/MiKTeX/texmfs/install
+/fonts/type1/public/lm/lmbx10.pfb></Users/orion/Library/Application Support/MiK
+TeX/texmfs/install/fonts/type1/public/lm/lmbx12.pfb></Users/orion/Library/Appli
+cation Support/MiKTeX/texmfs/install/fonts/type1/public/lm/lmr10.pfb></Users/or
+ion/Library/Application Support/MiKTeX/texmfs/install/fonts/type1/public/lm/lmr
+12.pfb></Users/orion/Library/Application Support/MiKTeX/texmfs/install/fonts/ty
+pe1/public/lm/lmssbx10.pfb>
+Output written on main.pdf (12 pages, 160411 bytes).
+PDF statistics:
+ 62 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+

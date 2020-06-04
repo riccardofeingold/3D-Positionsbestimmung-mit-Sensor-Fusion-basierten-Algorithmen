@@ -1,0 +1,81 @@
+\documentclass{scrreprt}
+
+% Schmale Seitenränder festlegen
+\KOMAoption{DIV}{15}
+
+% Vordefinierte Texte (z.B. "Inhaltsverzeichnis") auf Deutsch
+\usepackage[ngerman]{babel}
+
+% Unterstützung von UTF-8 (Unicode)
+\usepackage[utf8]{inputenc}
+
+% Unterstützung der modernen Zeichencodierung
+\usepackage[T1]{fontenc}
+
+% Moderne Schriftart verwenden
+\usepackage{lmodern}
+
+% Schriftart Georgia verwenden
+\usepackage[T1]{fontenc}
+\fontfamily{Georgia}\selectfont
+
+% serifenfreie Schriftvariante verwenden
+\renewcommand{\familydefault}{\rmdefault}
+
+% Einbinden von Pixelgrafiken (JPG, PNG)
+\usepackage{graphicx}
+
+% Einbinden von Vektorgrafiken (SVG)
+\usepackage{svg}
+
+% Kopf- und Fusszeilen selbst definieren
+\usepackage{scrlayer-scrpage}
+
+% Voraussetzung für biblatex
+\usepackage{csquotes}
+
+% Zitate und Bibliografie
+\usepackage[style=ieee]{biblatex}
+
+%Bibliographie hinzufügen 
+\addbibresource{Bibliographie/Bibliographie.bib}
+
+\title{3D Positionsbestimmung mit Hilfe von Sensor-Fusion basierenden Algorithmen}
+\subtitle{Entwicklung eines Embedded-System zur Bestimmung der 3D Position mit Arduino}
+\author{Riccardo Orion Feingold\vspace{1cm}\\Betreut durch \\Stefan Rothe}
+
+\publishers{\includesvg{bilder/logo}\vspace{1cm}\\Gymnasium Kirchenfeld\\Abteilung MN}
+\subject{Maturaarbeit}
+
+% selbstdefinierte Kopf- und Fusszeile verwenden
+\pagestyle{scrheadings}
+
+\lohead{Maturaarbeit}
+\rohead{Riccardo Orion Feingold}
+\cofoot{\thepage}
+
+% Trennlinie für Kopfzeile einschalten
+% \KOMAoption{headsepline}{on}
+
+% Trennlinie für Fusszeile einschalten
+% KOMAoption{footsepline}{on}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\input{Texte/Vorwort.tex}
+\input{Texte/Abstrakt.tex}
+\input{Texte/Einleitung.tex}
+\input{Texte/Hoehenmessung.tex}
+\input{Texte/IMU.tex}
+\input{Texte/UserInterface.tex}
+\input{Texte/Methoden.tex}
+\input{Texte/Resultate.tex}
+\input{Texte/Diskussion.tex}
+
+\listoffigures
+%\printbibliography
+
+\end{document}
